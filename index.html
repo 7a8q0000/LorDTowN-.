@@ -7,15 +7,15 @@
     <!-- خط كايرو الحديث -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* الألوان المستوحاة من الفيديو مع تحسينات */
+        /* الثيم البرتقالي الاحترافي */
         :root {
-            --bg-main: #050b14;
-            --bg-card: #0c1627;
-            --primary: #00e5ff; /* اللون السماوي البارز */
-            --primary-glow: rgba(0, 229, 255, 0.2);
+            --bg-main: #0f0a05; /* خلفية داكنة تميل للدفء */
+            --bg-card: #1a1108; /* لون البطاقات */
+            --primary: #ff7b00; /* اللون البرتقالي البارز */
+            --primary-glow: rgba(255, 123, 0, 0.2);
             --text-light: #ffffff;
-            --text-muted: #8b9bb4;
-            --border-color: #1a273e;
+            --text-muted: #a89f94;
+            --border-color: #332010;
         }
 
         * {
@@ -37,7 +37,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(5, 11, 20, 0.85);
+            background: rgba(15, 10, 5, 0.85);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color);
         }
@@ -73,7 +73,7 @@
             padding: 0 20px 15px 20px;
             overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: none; /* إخفاء شريط التمرير */
+            scrollbar-width: none;
         }
         .nav-links::-webkit-scrollbar { display: none; }
 
@@ -91,7 +91,7 @@
 
         .nav-links button.active {
             color: var(--primary);
-            background: rgba(0, 229, 255, 0.1);
+            background: rgba(255, 123, 0, 0.1);
             border: 1px solid var(--primary);
         }
 
@@ -151,7 +151,7 @@
         }
 
         .tags span {
-            background: rgba(0, 229, 255, 0.05);
+            background: rgba(255, 123, 0, 0.05);
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 6px 16px;
@@ -244,7 +244,7 @@
             font-weight: 700;
         }
 
-        /* الجداول (البروتوكولات) */
+        /* الجداول */
         .table-container {
             background: var(--bg-card);
             border-radius: 12px;
@@ -259,7 +259,7 @@
         }
 
         th {
-            background: rgba(0, 229, 255, 0.05);
+            background: rgba(255, 123, 0, 0.05);
             color: var(--primary);
             text-align: right;
             padding: 15px;
@@ -278,12 +278,12 @@
 
         tr:last-child td { border-bottom: none; }
         
-        /* مشغل الصوت العائم (نفس مكان الفيديو) */
+        /* مشغل الصوت العائم */
         .audio-btn {
             position: fixed;
             bottom: 25px;
             left: 20px;
-            background: rgba(12, 22, 39, 0.9);
+            background: rgba(26, 17, 8, 0.9);
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 10px 20px;
@@ -316,20 +316,16 @@
 </head>
 <body>
 
-    <!-- ملف الصوت (ضع رابط الموسيقى هنا) -->
     <audio id="bgMusic" loop src="music.mp3"></audio>
 
-    <!-- زر الصوت العائم -->
     <button class="audio-btn" id="audioToggle" onclick="toggleAudio()">
         <span id="audioIcon">🔈</span>
         <span id="audioText">تشغيل الصوت</span>
     </button>
 
-    <!-- الهيدر والناف بار -->
     <header class="header">
         <div class="nav-top">
             <div class="logo">
-                <!-- يمكنك تغيير الرابط بصورة شعار LSPD -->
                 <img src="https://i.imgur.com/x0qB1V3.png" alt="Logo"> 
                 دولة LSPD
             </div>
@@ -343,9 +339,7 @@
         </div>
     </header>
 
-    <!-- محتوى الصفحة -->
     <main class="container">
-
         <!-- 1. تبويب الرئيسية -->
         <div id="home" class="tab-content active">
             <div class="hero-card">
@@ -406,15 +400,6 @@
                 <p class="person-desc">المساعد المباشر للقائد، يساهم في تنظيم الكوادر والإشراف على المهام الميدانية والعمليات.</p>
                 <div class="person-unit">الوحدة: القيادة العامة</div>
             </div>
-
-            <div class="person-card">
-                <div class="person-header">
-                    <span class="rank-badge">P-3</span>
-                    <span class="person-name">Commander</span>
-                </div>
-                <p class="person-desc">قائد برتبة P-3، معروف بخبرته في التنسيق الميداني وإدارة البلاغات الخطرة.</p>
-                <div class="person-unit">الوحدة: قيادة الميدان</div>
-            </div>
         </div>
 
         <!-- 3. تبويب البروتوكولات -->
@@ -434,26 +419,6 @@
                         <tr><td>10-2</td><td>غير صحيح</td><td>تن - تو</td></tr>
                         <tr><td>10-3</td><td>استيقاف (مروري - جنائي)</td><td>تن - ثري</td></tr>
                         <tr><td>10-4</td><td>صحيح / مفهوم</td><td>تن - فور</td></tr>
-                        <tr><td>10-5</td><td>سرقة سيارة</td><td>تن - فايف</td></tr>
-                        <tr><td>10-20</td><td>تحديد الموقع</td><td>تن - توني</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h2 class="section-title" style="margin-top: 30px;">أكواد الحالة</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>البلاغ</th>
-                            <th>المعنى</th>
-                            <th>الاختصار</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Code 0</td><td>عموم الوحدات تتوجه (استنفار أمني)</td><td>كود زيرو</td></tr>
-                        <tr><td>Code 4</td><td>المكان آمن وخالي</td><td>كود فور</td></tr>
-                        <tr><td>Code 6</td><td>جاري التحقق وتفتيش المنطقة</td><td>كود سكس</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -472,9 +437,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Officer Ali</td><td><span class="rank-badge" style="background:#2a3a52; color:#fff;">S-10</span></td><td>دورية عامة</td></tr>
-                        <tr><td>Officer Saad</td><td><span class="rank-badge" style="background:#2a3a52; color:#fff;">S-15</span></td><td>دعم وإسناد</td></tr>
-                        <tr><td>Sergeant Fahad</td><td><span class="rank-badge" style="background:#2a3a52; color:#fff;">S-20</span></td><td>الميدان</td></tr>
+                        <tr><td>Officer Ali</td><td><span class="rank-badge" style="background:#332010; color:#fff;">S-10</span></td><td>دورية عامة</td></tr>
+                        <tr><td>Officer Saad</td><td><span class="rank-badge" style="background:#332010; color:#fff;">S-15</span></td><td>دعم وإسناد</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -490,41 +454,28 @@
                 <p class="person-desc" style="font-size: 16px; margin-bottom: 15px;">
                     <strong style="color:var(--primary);">النظام:</strong> الالتزام بالبروتوكولات والرتب في كل الأوقات.
                 </p>
-                <p class="person-desc" style="font-size: 16px; margin-bottom: 15px;">
-                    <strong style="color:var(--primary);">الاحترافية:</strong> تنفيذ المهام بدقة واحترام متبادل بين جميع الأفراد.
-                </p>
                 <p class="person-desc" style="font-size: 16px;">
                     <strong style="color:var(--primary);">الحماية:</strong> الدفاع عن استقرار الدولة والمواطنين وممتلكاتهم.
                 </p>
             </div>
         </div>
-
     </main>
 
     <script>
-        // دالة التنقل بين التبويبات
         function openTab(evt, tabName) {
-            // إخفاء جميع التبويبات
             let tabcontent = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
                 tabcontent[i].classList.remove("active");
             }
-
-            // إزالة الكلاس active من جميع الأزرار
             let tablinks = document.querySelectorAll(".nav-links button");
             for (let i = 0; i < tablinks.length; i++) {
                 tablinks[i].classList.remove("active");
             }
-
-            // إظهار التبويب المطلوب وتفعيل الزر
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
-            
-            // تمرير الشاشة للأعلى قليلاً عند تغيير القسم
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // دالة تشغيل وإيقاف الصوت
         const audio = document.getElementById('bgMusic');
         const audioIcon = document.getElementById('audioIcon');
         const audioText = document.getElementById('audioText');
@@ -536,12 +487,12 @@
                     audioText.textContent = 'إيقاف الصوت';
                     document.getElementById('audioToggle').style.background = 'var(--primary)';
                     document.getElementById('audioToggle').style.color = '#000';
-                }).catch(err => console.log("خطأ في التشغيل:", err));
+                }).catch(err => console.log(err));
             } else {
                 audio.pause();
                 audioIcon.textContent = '🔈';
                 audioText.textContent = 'تشغيل الصوت';
-                document.getElementById('audioToggle').style.background = 'rgba(12, 22, 39, 0.9)';
+                document.getElementById('audioToggle').style.background = 'rgba(26, 17, 8, 0.9)';
                 document.getElementById('audioToggle').style.color = 'var(--primary)';
             }
         }
