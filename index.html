@@ -12,10 +12,14 @@
             --bg-main: #0f0a05; /* خلفية داكنة تميل للدفء */
             --bg-card: #1a1108; /* لون البطاقات */
             --primary: #ff7b00; /* اللون البرتقالي البارز */
+            --primary-hover: #e06c00;
             --primary-glow: rgba(255, 123, 0, 0.2);
             --text-light: #ffffff;
             --text-muted: #a89f94;
             --border-color: #332010;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
         * {
@@ -97,7 +101,7 @@
 
         /* الحاوية الرئيسية */
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -163,7 +167,7 @@
         /* شبكة الإحصائيات */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -244,24 +248,24 @@
             font-weight: 700;
         }
 
-        /* الجداول */
+        /* الجداول العامة */
         .table-container {
             background: var(--bg-card);
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            overflow: hidden;
+            overflow-x: auto;
             margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            text-align: right;
         }
 
         th {
             background: rgba(255, 123, 0, 0.05);
             color: var(--primary);
-            text-align: right;
             padding: 15px;
             font-size: 15px;
             font-weight: 800;
@@ -277,6 +281,95 @@
         }
 
         tr:last-child td { border-bottom: none; }
+
+        /* شارات حالة العسكري */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .badge-active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .badge-leave { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge-suspended { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        
+        /* عناصر لوحة التحكم الخاصة بالمسؤولين */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .admin-grid { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .form-group { margin-bottom: 15px; }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            background: #0f0a05;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-control:focus { border-color: var(--primary); }
+
+        .btn-add {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-add:hover { background: var(--primary-hover); }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .btn-delete { color: var(--danger); }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.1); }
+        .btn-status { color: var(--primary); }
+        .btn-status:hover { background: rgba(255, 123, 0, 0.1); }
         
         /* مشغل الصوت العائم */
         .audio-btn {
@@ -335,6 +428,7 @@
             <button onclick="openTab(event, 'leaders')">القادات</button>
             <button onclick="openTab(event, 'protocols')">البروتوكولات</button>
             <button onclick="openTab(event, 'soldiers')">العساكر</button>
+            <button onclick="openTab(event, 'admin')">⚡ لوحة المسؤولين</button>
             <button onclick="openTab(event, 'about')">تعريف الدولة</button>
         </div>
     </header>
@@ -354,16 +448,16 @@
 
             <div class="stats-grid">
                 <div class="stat-box">
-                    <div class="number">+25</div>
-                    <div class="label">أعضاء نشطون</div>
+                    <div class="number" id="homeTotalOfficers">0</div>
+                    <div class="label">إجمالي القوة العسكرية</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" style="color: var(--success);" id="homeActiveOfficers">0</div>
+                    <div class="label">على رأس العمل</div>
                 </div>
                 <div class="stat-box">
                     <div class="number">8</div>
                     <div class="label">رتب رئيسية</div>
-                </div>
-                <div class="stat-box">
-                    <div class="number">4</div>
-                    <div class="label">وحدات عمليات</div>
                 </div>
                 <div class="stat-box">
                     <div class="number">24/7</div>
@@ -386,7 +480,7 @@
             <div class="person-card">
                 <div class="person-header">
                     <span class="rank-badge">P-1</span>
-                    <span class="person-name">Meshaal Bin Raeed</span>
+                    <span class="person-name">Chief of Police</span>
                 </div>
                 <p class="person-desc">القائد الأعلى لقطاع LSPD، المسؤول الأول عن الهيكل القيادي والتنظيم الاستراتيجي للقطاع.</p>
                 <div class="person-unit">الوحدة: القيادة العليا</div>
@@ -395,7 +489,7 @@
             <div class="person-card">
                 <div class="person-header">
                     <span class="rank-badge">P-2</span>
-                    <span class="person-name">Cumali Koshovali</span>
+                    <span class="person-name">Assistant Chief</span>
                 </div>
                 <p class="person-desc">المساعد المباشر للقائد، يساهم في تنظيم الكوادر والإشراف على المهام الميدانية والعمليات.</p>
                 <div class="person-unit">الوحدة: القيادة العامة</div>
@@ -424,27 +518,100 @@
             </div>
         </div>
 
-        <!-- 4. تبويب العساكر -->
+        <!-- 4. تبويب العساكر العامة (يقرأ تلقائياً البيانات التي يضيفها المسؤول) -->
         <div id="soldiers" class="tab-content">
-            <h2 class="section-title">قائمة العساكر</h2>
+            <h2 class="section-title">القائمة العامة للعساكر</h2>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
+                            <th>الرقم العسكري</th>
                             <th>الاسم</th>
                             <th>الرتبة</th>
-                            <th>الفرقة</th>
+                            <th>الفرقة / القسم</th>
+                            <th>الحالة الحالية</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr><td>Officer Ali</td><td><span class="rank-badge" style="background:#332010; color:#fff;">S-10</span></td><td>دورية عامة</td></tr>
-                        <tr><td>Officer Saad</td><td><span class="rank-badge" style="background:#332010; color:#fff;">S-15</span></td><td>دعم وإسناد</td></tr>
+                    <tbody id="publicOfficersTable">
+                        <!-- تُعرض القائمة هنا تلقائياً -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 5. تبويب تعريف الدولة -->
+        <!-- 5. تبويب لوحة التحكم الخاصة بالمسؤولين -->
+        <div id="admin" class="tab-content">
+            <h2 class="section-title">🛡️ لوحة إشراف وتحديث الكادر العسكري</h2>
+            
+            <div class="admin-grid">
+                <!-- نموذج الإضافة -->
+                <div class="card">
+                    <h3 class="card-title">➕ إضافة عسكري جديد</h3>
+                    
+                    <div class="form-group">
+                        <label>اسم العسكري:</label>
+                        <input type="text" id="officerName" class="form-control" placeholder="مثال: خالد عبدالسلام">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الرقم العسكري (Badge):</label>
+                        <input type="text" id="badgeNumber" class="form-control" placeholder="مثال: S-10">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الرتبة العسكرية:</label>
+                        <select id="officerRank" class="form-control">
+                            <option value="ملازم أول">ملازم أول</option>
+                            <option value="ملازم">ملازم</option>
+                            <option value="رئيس رقباء">رئيس رقباء</option>
+                            <option value="رقيب أول">رقيب أول</option>
+                            <option value="رقيب">رقيب</option>
+                            <option value="عريف">عريف</option>
+                            <option value="جندي أول">جندي أول</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>القسم / الفرقة:</label>
+                        <select id="department" class="form-control">
+                            <option value="دورية عامة">دورية عامة</option>
+                            <option value="دعم وإسناد">دعم وإسناد</option>
+                            <option value="المهام الخاصة SWAT">المهام الخاصة SWAT</option>
+                            <option value="المباحث والجنايات">المباحث والجنايات</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-add" onclick="addOfficer()">إضافة العسكري الآن</button>
+                </div>
+
+                <!-- قائمة الإدارة والتحكم -->
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
+                        <h3 class="card-title" style="margin:0;">إدارة العساكر المسجلين</h3>
+                        <input type="text" id="searchInput" class="form-control" style="width: 180px;" placeholder="بحث..." onkeyup="filterOfficers()">
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الرقم</th>
+                                    <th>الاسم</th>
+                                    <th>الرتبة</th>
+                                    <th>الحالة</th>
+                                    <th>التحكم</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminOfficersTable">
+                                <!-- العساكر مع زر الحذف والحالة -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. تبويب تعريف الدولة -->
         <div id="about" class="tab-content">
             <h2 class="section-title">المبادئ الأساسية</h2>
             <div class="person-card">
@@ -462,6 +629,7 @@
     </main>
 
     <script>
+        // نظام التنقل بين التبويبات
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
@@ -476,6 +644,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // تشغيل الموسيقى
         const audio = document.getElementById('bgMusic');
         const audioIcon = document.getElementById('audioIcon');
         const audioText = document.getElementById('audioText');
@@ -496,6 +665,130 @@
                 document.getElementById('audioToggle').style.color = 'var(--primary)';
             }
         }
+
+        // ===============================================
+        //  برمجة لوحة التحكم وإدارة العساكر
+        // ===============================================
+        let officers = JSON.parse(localStorage.getItem('lspd_officers_list')) || [
+            { id: 1, badge: "S-10", name: "Officer Ali", rank: "جندي أول", dept: "دورية عامة", status: "active" },
+            { id: 2, badge: "S-15", name: "Officer Saad", rank: "عريف", dept: "دعم وإسناد", status: "active" }
+        ];
+
+        function saveData() {
+            localStorage.setItem('lspd_officers_list', JSON.stringify(officers));
+            renderAllTables();
+        }
+
+        function addOfficer() {
+            const name = document.getElementById('officerName').value.trim();
+            const badge = document.getElementById('badgeNumber').value.trim();
+            const rank = document.getElementById('officerRank').value;
+            const dept = document.getElementById('department').value;
+
+            if (!name || !badge) {
+                alert("يرجى كتابة الاسم والرقم العسكري كحد أدنى!");
+                return;
+            }
+
+            const newOfficer = {
+                id: Date.now(),
+                badge: badge,
+                name: name,
+                rank: rank,
+                dept: dept,
+                status: "active"
+            };
+
+            officers.push(newOfficer);
+            saveData();
+
+            document.getElementById('officerName').value = '';
+            document.getElementById('badgeNumber').value = '';
+        }
+
+        function deleteOfficer(id) {
+            if (confirm("هل أنت تأكد من إزالة هذا العسكري من القائمة؟")) {
+                officers = officers.filter(o => o.id !== id);
+                saveData();
+            }
+        }
+
+        function toggleStatus(id) {
+            const officer = officers.find(o => o.id === id);
+            if (officer) {
+                if (officer.status === 'active') officer.status = 'leave';
+                else if (officer.status === 'leave') officer.status = 'suspended';
+                else officer.status = 'active';
+                saveData();
+            }
+        }
+
+        function renderAllTables() {
+            // 1. تحديث إحصائيات الصفحة الرئيسية
+            document.getElementById('homeTotalOfficers').textContent = officers.length;
+            document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
+
+            // 2. تحديث جدول العساكر العام
+            const publicTbody = document.getElementById('publicOfficersTable');
+            publicTbody.innerHTML = '';
+            
+            if (officers.length === 0) {
+                publicTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">لا يوجد عساكر مسجلين.</td></tr>`;
+            } else {
+                officers.forEach(o => {
+                    let badgeHtml = '';
+                    if (o.status === 'active') badgeHtml = '<span class="badge badge-active">على رأس العمل</span>';
+                    else if (o.status === 'leave') badgeHtml = '<span class="badge badge-leave">في إجازة</span>';
+                    else badgeHtml = '<span class="badge badge-suspended">موقف</span>';
+
+                    publicTbody.innerHTML += `
+                        <tr>
+                            <td><span class="rank-badge" style="background:#332010; color:#fff;">${o.badge}</span></td>
+                            <td>${o.name}</td>
+                            <td>${o.rank}</td>
+                            <td>${o.dept}</td>
+                            <td>${badgeHtml}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            // 3. تحديث جدول لوحة المسؤولين
+            const adminTbody = document.getElementById('adminOfficersTable');
+            adminTbody.innerHTML = '';
+
+            officers.forEach(o => {
+                let badgeHtml = '';
+                if (o.status === 'active') badgeHtml = '<span class="badge badge-active">ميداني</span>';
+                else if (o.status === 'leave') badgeHtml = '<span class="badge badge-leave">إجازة</span>';
+                else badgeHtml = '<span class="badge badge-suspended">موقف</span>';
+
+                adminTbody.innerHTML += `
+                    <tr>
+                        <td><strong>${o.badge}</strong></td>
+                        <td>${o.name}</td>
+                        <td>${o.rank}</td>
+                        <td>${badgeHtml}</td>
+                        <td>
+                            <button class="action-btn btn-status" onclick="toggleStatus(${o.id})">🔄 الحالة</button>
+                            <button class="action-btn btn-delete" onclick="deleteOfficer(${o.id})">🗑️ حذف</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterOfficers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#adminOfficersTable tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        // تشغيل البناء عند فتح الصفحة
+        renderAllTables();
     </script>
 </body>
 </html>
