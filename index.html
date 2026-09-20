@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>دولة LSPD | البوابة الرسمية</title>
-    <!-- خط كايرو الحديث -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* الثيم البرتقالي الاحترافي */
         :root {
-            --bg-main: #0f0a05; /* خلفية داكنة تميل للدفء */
-            --bg-card: #1a1108; /* لون البطاقات */
-            --primary: #ff7b00; /* اللون البرتقالي البارز */
+            --bg-main: #0f0a05;
+            --bg-card: #1a1108;
+            --primary: #ff7b00;
             --primary-hover: #e06c00;
             --primary-glow: rgba(255, 123, 0, 0.2);
             --text-light: #ffffff;
@@ -36,7 +34,6 @@
             padding-bottom: 80px;
         }
 
-        /* شريط التنقل (الناف بار) */
         .header {
             position: sticky;
             top: 0;
@@ -70,7 +67,6 @@
             box-shadow: 0 0 10px var(--primary-glow);
         }
 
-        /* شريط الأقسام القابل للتمرير */
         .nav-links {
             display: flex;
             gap: 10px;
@@ -99,14 +95,12 @@
             border: 1px solid var(--primary);
         }
 
-        /* الحاوية الرئيسية */
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        /* نظام التبويبات */
         .tab-content {
             display: none;
             animation: fadeIn 0.4s ease-out forwards;
@@ -120,7 +114,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* قسم الرئيسية */
         .hero-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -164,7 +157,6 @@
             font-weight: 700;
         }
 
-        /* شبكة الإحصائيات */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -193,7 +185,6 @@
             font-weight: 700;
         }
 
-        /* بطاقات القادات والعساكر */
         .person-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -248,7 +239,6 @@
             font-weight: 700;
         }
 
-        /* الجداول العامة */
         .table-container {
             background: var(--bg-card);
             border-radius: 12px;
@@ -282,7 +272,6 @@
 
         tr:last-child td { border-bottom: none; }
 
-        /* شارات حالة العسكري */
         .badge {
             padding: 4px 10px;
             border-radius: 6px;
@@ -294,7 +283,6 @@
         .badge-leave { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
         .badge-suspended { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         
-        /* عناصر لوحة التحكم الخاصة بالمسؤولين */
         .admin-grid {
             display: grid;
             grid-template-columns: 300px 1fr;
@@ -371,7 +359,6 @@
         .btn-status { color: var(--primary); }
         .btn-status:hover { background: rgba(255, 123, 0, 0.1); }
         
-        /* مشغل الصوت العائم */
         .audio-btn {
             position: fixed;
             bottom: 25px;
@@ -405,6 +392,28 @@
             margin-bottom: 20px;
             text-align: center;
         }
+
+        /* نافذة طلب كلمة المرور (Modal) */
+        .auth-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
     </style>
 </head>
 <body>
@@ -416,19 +425,33 @@
         <span id="audioText">تشغيل الصوت</span>
     </button>
 
+    <!-- شاشة إدخال رمز الوصول للإدارة -->
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-card">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">🔒 دخول المسؤولين</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">يرجى إدخال الرمز السري للوصول إلى اللوحة:</p>
+            <input type="password" id="adminPasswordInput" class="form-control" placeholder="رمز الدخول..." style="margin-bottom: 15px; text-align: center; font-size: 18px;">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-add" onclick="checkAdminAuth()">دخول</button>
+                <button class="btn-add" style="background: var(--border-color); color: #fff;" onclick="closeAuthModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <header class="header">
         <div class="nav-top">
             <div class="logo">
                 <img src="https://i.imgur.com/x0qB1V3.png" alt="Logo"> 
                 دولة LSPD
             </div>
+            <div id="adminBadgeStatus" style="font-size: 12px; color: var(--success); display: none;">✅ مسؤول مسجل دخول</div>
         </div>
         <div class="nav-links">
             <button class="active" onclick="openTab(event, 'home')">الرئيسية</button>
             <button onclick="openTab(event, 'leaders')">القادات</button>
             <button onclick="openTab(event, 'protocols')">البروتوكولات</button>
             <button onclick="openTab(event, 'soldiers')">العساكر</button>
-            <button onclick="openTab(event, 'admin')">⚡ لوحة المسؤولين</button>
+            <button onclick="requestAdminAccess(event)">⚡ لوحة المسؤولين</button>
             <button onclick="openTab(event, 'about')">تعريف الدولة</button>
         </div>
     </header>
@@ -518,7 +541,7 @@
             </div>
         </div>
 
-        <!-- 4. تبويب العساكر العامة (يقرأ تلقائياً البيانات التي يضيفها المسؤول) -->
+        <!-- 4. تبويب العساكر العامة -->
         <div id="soldiers" class="tab-content">
             <h2 class="section-title">القائمة العامة للعساكر</h2>
             <div class="table-container">
@@ -532,19 +555,16 @@
                             <th>الحالة الحالية</th>
                         </tr>
                     </thead>
-                    <tbody id="publicOfficersTable">
-                        <!-- تُعرض القائمة هنا تلقائياً -->
-                    </tbody>
+                    <tbody id="publicOfficersTable"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 5. تبويب لوحة التحكم الخاصة بالمسؤولين -->
+        <!-- 5. تبويب لوحة التحكم الخاصة بالمسؤولين (محمية) -->
         <div id="admin" class="tab-content">
             <h2 class="section-title">🛡️ لوحة إشراف وتحديث الكادر العسكري</h2>
             
             <div class="admin-grid">
-                <!-- نموذج الإضافة -->
                 <div class="card">
                     <h3 class="card-title">➕ إضافة عسكري جديد</h3>
                     
@@ -584,7 +604,6 @@
                     <button class="btn-add" onclick="addOfficer()">إضافة العسكري الآن</button>
                 </div>
 
-                <!-- قائمة الإدارة والتحكم -->
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
                         <h3 class="card-title" style="margin:0;">إدارة العساكر المسجلين</h3>
@@ -602,9 +621,7 @@
                                     <th>التحكم</th>
                                 </tr>
                             </thead>
-                            <tbody id="adminOfficersTable">
-                                <!-- العساكر مع زر الحذف والحالة -->
-                            </tbody>
+                            <tbody id="adminOfficersTable"></tbody>
                         </table>
                     </div>
                 </div>
@@ -629,7 +646,10 @@
     </main>
 
     <script>
-        // نظام التنقل بين التبويبات
+        // الرمز السري للإدارة (قم بتغييره من هنا)
+        const ADMIN_PASSWORD = "LSPD1234"; 
+        let isAdminLoggedIn = false;
+
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
@@ -640,11 +660,39 @@
                 tablinks[i].classList.remove("active");
             }
             document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
+            if (evt) evt.currentTarget.classList.add("active");
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // تشغيل الموسيقى
+        // حماية لوحة التحكم
+        function requestAdminAccess(evt) {
+            if (isAdminLoggedIn) {
+                openTab(evt, 'admin');
+            } else {
+                document.getElementById('authOverlay').style.display = 'flex';
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        function checkAdminAuth() {
+            const pwd = document.getElementById('adminPasswordInput').value;
+            if (pwd === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('authOverlay').style.display = 'none';
+                document.getElementById('adminBadgeStatus').style.display = 'block';
+                openTab(null, 'admin');
+                document.querySelectorAll('.nav-links button')[4].classList.add('active');
+            } else {
+                alert('⚠️ الرمز السري غير صحيح!');
+                document.getElementById('adminPasswordInput').value = '';
+            }
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authOverlay').style.display = 'none';
+        }
+
+        // تشغيل الصوت
         const audio = document.getElementById('bgMusic');
         const audioIcon = document.getElementById('audioIcon');
         const audioText = document.getElementById('audioText');
@@ -666,9 +714,7 @@
             }
         }
 
-        // ===============================================
-        //  برمجة لوحة التحكم وإدارة العساكر
-        // ===============================================
+        // بيانات العساكر
         let officers = JSON.parse(localStorage.getItem('lspd_officers_list')) || [
             { id: 1, badge: "S-10", name: "Officer Ali", rank: "جندي أول", dept: "دورية عامة", status: "active" },
             { id: 2, badge: "S-15", name: "Officer Saad", rank: "عريف", dept: "دعم وإسناد", status: "active" }
@@ -686,19 +732,11 @@
             const dept = document.getElementById('department').value;
 
             if (!name || !badge) {
-                alert("يرجى كتابة الاسم والرقم العسكري كحد أدنى!");
+                alert("يرجى كتابة الاسم والرقم العسكري!");
                 return;
             }
 
-            const newOfficer = {
-                id: Date.now(),
-                badge: badge,
-                name: name,
-                rank: rank,
-                dept: dept,
-                status: "active"
-            };
-
+            const newOfficer = { id: Date.now(), badge, name, rank, dept, status: "active" };
             officers.push(newOfficer);
             saveData();
 
@@ -707,7 +745,7 @@
         }
 
         function deleteOfficer(id) {
-            if (confirm("هل أنت تأكد من إزالة هذا العسكري من القائمة؟")) {
+            if (confirm("هل أنت متأكد من الحذف؟")) {
                 officers = officers.filter(o => o.id !== id);
                 saveData();
             }
@@ -724,22 +762,19 @@
         }
 
         function renderAllTables() {
-            // 1. تحديث إحصائيات الصفحة الرئيسية
             document.getElementById('homeTotalOfficers').textContent = officers.length;
             document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
 
-            // 2. تحديث جدول العساكر العام
             const publicTbody = document.getElementById('publicOfficersTable');
             publicTbody.innerHTML = '';
             
             if (officers.length === 0) {
-                publicTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">لا يوجد عساكر مسجلين.</td></tr>`;
+                publicTbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا يوجد عساكر مسجلين.</td></tr>`;
             } else {
                 officers.forEach(o => {
-                    let badgeHtml = '';
-                    if (o.status === 'active') badgeHtml = '<span class="badge badge-active">على رأس العمل</span>';
-                    else if (o.status === 'leave') badgeHtml = '<span class="badge badge-leave">في إجازة</span>';
-                    else badgeHtml = '<span class="badge badge-suspended">موقف</span>';
+                    let badgeHtml = o.status === 'active' ? '<span class="badge badge-active">على رأس العمل</span>' :
+                                    o.status === 'leave' ? '<span class="badge badge-leave">في إجازة</span>' :
+                                    '<span class="badge badge-suspended">موقف</span>';
 
                     publicTbody.innerHTML += `
                         <tr>
@@ -748,20 +783,16 @@
                             <td>${o.rank}</td>
                             <td>${o.dept}</td>
                             <td>${badgeHtml}</td>
-                        </tr>
-                    `;
+                        </tr>`;
                 });
             }
 
-            // 3. تحديث جدول لوحة المسؤولين
             const adminTbody = document.getElementById('adminOfficersTable');
             adminTbody.innerHTML = '';
-
             officers.forEach(o => {
-                let badgeHtml = '';
-                if (o.status === 'active') badgeHtml = '<span class="badge badge-active">ميداني</span>';
-                else if (o.status === 'leave') badgeHtml = '<span class="badge badge-leave">إجازة</span>';
-                else badgeHtml = '<span class="badge badge-suspended">موقف</span>';
+                let badgeHtml = o.status === 'active' ? '<span class="badge badge-active">ميداني</span>' :
+                                o.status === 'leave' ? '<span class="badge badge-leave">إجازة</span>' :
+                                '<span class="badge badge-suspended">موقف</span>';
 
                 adminTbody.innerHTML += `
                     <tr>
@@ -773,8 +804,7 @@
                             <button class="action-btn btn-status" onclick="toggleStatus(${o.id})">🔄 الحالة</button>
                             <button class="action-btn btn-delete" onclick="deleteOfficer(${o.id})">🗑️ حذف</button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
         }
 
@@ -782,12 +812,10 @@
             const query = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#adminOfficersTable tr');
             rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
+                row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
             });
         }
 
-        // تشغيل البناء عند فتح الصفحة
         renderAllTables();
     </script>
 </body>
