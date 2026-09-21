@@ -185,6 +185,54 @@
             font-weight: 700;
         }
 
+        /* تنسيق الإمبدات Embeds */
+        .custom-embed {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .custom-embed::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: var(--embed-color, var(--primary));
+        }
+
+        .embed-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .embed-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        .embed-footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
         .person-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -285,12 +333,8 @@
         
         .admin-grid {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
-        }
-
-        @media (max-width: 850px) {
-            .admin-grid { grid-template-columns: 1fr; }
         }
 
         .card {
@@ -298,6 +342,7 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
+            margin-bottom: 20px;
         }
 
         .card-title {
@@ -305,6 +350,9 @@
             font-weight: 800;
             margin-bottom: 15px;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-group { margin-bottom: 15px; }
@@ -326,6 +374,11 @@
             border-radius: 8px;
             font-size: 14px;
             outline: none;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
         }
 
         .form-control:focus { border-color: var(--primary); }
@@ -358,7 +411,7 @@
         .btn-delete:hover { background: rgba(239, 68, 68, 0.1); }
         .btn-status { color: var(--primary); }
         .btn-status:hover { background: rgba(255, 123, 0, 0.1); }
-        
+
         .audio-btn {
             position: fixed;
             bottom: 25px;
@@ -393,7 +446,7 @@
             text-align: center;
         }
 
-        /* نافذة طلب كلمة المرور (Modal) */
+        /* نافذة طلب كلمة المرور */
         .auth-overlay {
             display: none;
             position: fixed;
@@ -425,11 +478,11 @@
         <span id="audioText">تشغيل الصوت</span>
     </button>
 
-    <!-- شاشة إدخال رمز الوصول للإدارة -->
+    <!-- شاشة طلب كلمة المرور للإدارة -->
     <div id="authOverlay" class="auth-overlay">
         <div class="auth-card">
             <h3 style="color: var(--primary); margin-bottom: 10px;">🔒 دخول المسؤولين</h3>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">يرجى إدخال الرمز السري للوصول إلى اللوحة:</p>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">ادخل الرمز السري للتحكم بالكامل:</p>
             <input type="password" id="adminPasswordInput" class="form-control" placeholder="رمز الدخول..." style="margin-bottom: 15px; text-align: center; font-size: 18px;">
             <div style="display: flex; gap: 10px;">
                 <button class="btn-add" onclick="checkAdminAuth()">دخول</button>
@@ -457,7 +510,7 @@
     </header>
 
     <main class="container">
-        <!-- 1. تبويب الرئيسية -->
+        <!-- 1. الرئيسية -->
         <div id="home" class="tab-content active">
             <div class="hero-card">
                 <h1>دولة LSPD</h1>
@@ -479,8 +532,8 @@
                     <div class="label">على رأس العمل</div>
                 </div>
                 <div class="stat-box">
-                    <div class="number">8</div>
-                    <div class="label">رتب رئيسية</div>
+                    <div class="number" id="homeTotalProtocols">0</div>
+                    <div class="label">عدد البروتوكولات</div>
                 </div>
                 <div class="stat-box">
                     <div class="number">24/7</div>
@@ -488,15 +541,11 @@
                 </div>
             </div>
 
-            <div class="person-card" style="text-align: center;">
-                <h3 style="color: var(--primary); margin-bottom: 10px;">تعريف السيرفر</h3>
-                <p style="color: var(--text-muted); line-height: 1.8; font-size: 15px;">
-                    سيرفر LSPD هو المنصة الرسمية لقطاع الشرطة، حيث يجتمع القادة والعساكر تحت مظلة واحدة لتنفيذ المهام الأمنية والعسكرية، وتنظيم الرتب والبروتوكولات، وبناء مجتمع منظم قائم على الانضباط والولاء.
-                </p>
-            </div>
+            <!-- مكان عرض الإمبدات والإعلانات في الرئيسية -->
+            <div id="homeEmbedsContainer"></div>
         </div>
 
-        <!-- 2. تبويب القادات -->
+        <!-- 2. القادات -->
         <div id="leaders" class="tab-content">
             <h2 class="section-title">القادات العليا</h2>
             
@@ -519,29 +568,24 @@
             </div>
         </div>
 
-        <!-- 3. تبويب البروتوكولات -->
+        <!-- 3. البروتوكولات (الأكواد) -->
         <div id="protocols" class="tab-content">
-            <h2 class="section-title">الأكواد المهمة</h2>
+            <h2 class="section-title">الأكواد والبروتوكولات الرسمية</h2>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
-                            <th>البلاغ</th>
-                            <th>طريقة البلاغ</th>
-                            <th>الاختصار</th>
+                            <th>الكود / الاختصار</th>
+                            <th>البلاغ / المعنى</th>
+                            <th>التفاصيل والتعليمات</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr><td>10-1</td><td>مطاردة مركبة</td><td>تن - ون</td></tr>
-                        <tr><td>10-2</td><td>غير صحيح</td><td>تن - تو</td></tr>
-                        <tr><td>10-3</td><td>استيقاف (مروري - جنائي)</td><td>تن - ثري</td></tr>
-                        <tr><td>10-4</td><td>صحيح / مفهوم</td><td>تن - فور</td></tr>
-                    </tbody>
+                    <tbody id="publicProtocolsTable"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 4. تبويب العساكر العامة -->
+        <!-- 4. العساكر -->
         <div id="soldiers" class="tab-content">
             <h2 class="section-title">القائمة العامة للعساكر</h2>
             <div class="table-container">
@@ -560,13 +604,83 @@
             </div>
         </div>
 
-        <!-- 5. تبويب لوحة التحكم الخاصة بالمسؤولين (محمية) -->
+        <!-- 5. لوحة المسؤولين (تعديل كامل ومتقدم) -->
         <div id="admin" class="tab-content">
-            <h2 class="section-title">🛡️ لوحة إشراف وتحديث الكادر العسكري</h2>
+            <h2 class="section-title">🛡️ لوحة الإدارة والتحكم الشامل</h2>
             
+            <!-- أداة إضافة امبد/إعلان -->
+            <div class="card">
+                <h3 class="card-title">📌 نشر إعلان / بطاقة (Embed) جديد</h3>
+                <div class="admin-grid">
+                    <div>
+                        <div class="form-group">
+                            <label>عنوان البطاقة / الإعلان:</label>
+                            <input type="text" id="embedTitle" class="form-control" placeholder="مثال: تعليمات جديدة بشأن التداهمات">
+                        </div>
+                        <div class="form-group">
+                            <label>مكان النشر:</label>
+                            <select id="embedTarget" class="form-control">
+                                <option value="home">الصفحة الرئيسية</option>
+                                <option value="about">صفحة تعريف الدولة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>لون الشريط الجانبي (Embed Color):</label>
+                            <input type="color" id="embedColor" class="form-control" value="#ff7b00" style="height: 40px; cursor: pointer;">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label>محتوى التفاصيل:</label>
+                            <textarea id="embedDesc" class="form-control" placeholder="أكتب التفاصيل هنا..." style="height: 120px;"></textarea>
+                        </div>
+                        <button class="btn-add" onclick="addEmbed()">نشر البطاقة الإدارية 🚀</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أداة إضافة وتعديل البروتوكولات -->
+            <div class="card">
+                <h3 class="card-title">📜 إضافة / تعديل البروتوكولات الأمنيّة</h3>
+                <div class="admin-grid">
+                    <div style="grid-column: span 1;">
+                        <div class="form-group">
+                            <label>اسم الاختصار / الكود:</label>
+                            <input type="text" id="protocolCode" class="form-control" placeholder="مثال: 10-20">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع البلاغ / العنوان:</label>
+                            <input type="text" id="protocolTitle" class="form-control" placeholder="مثال: تحديد الموقع">
+                        </div>
+                        <div class="form-group">
+                            <label>التفاصيل والإجراء المطلوب:</label>
+                            <input type="text" id="protocolDesc" class="form-control" placeholder="مثال: إرسال الإحداثيات فوراً على اللاسلكي">
+                        </div>
+                        <button class="btn-add" onclick="addProtocol()">حفظ البروتوكول ➕</button>
+                    </div>
+                    
+                    <div>
+                        <label style="font-size:13px; color:var(--text-muted); font-weight:700;">البروتوكولات الحالية:</label>
+                        <div class="table-container" style="max-height: 250px; overflow-y: auto; margin-top: 5px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>الكود</th>
+                                        <th>البلاغ</th>
+                                        <th>حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminProtocolsTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة الكادر العسكري -->
             <div class="admin-grid">
                 <div class="card">
-                    <h3 class="card-title">➕ إضافة عسكري جديد</h3>
+                    <h3 class="card-title">🎖️ إضافة عسكري جديد</h3>
                     
                     <div class="form-group">
                         <label>اسم العسكري:</label>
@@ -601,13 +715,13 @@
                         </select>
                     </div>
 
-                    <button class="btn-add" onclick="addOfficer()">إضافة العسكري الآن</button>
+                    <button class="btn-add" onclick="addOfficer()">تسجيل العسكري</button>
                 </div>
 
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
-                        <h3 class="card-title" style="margin:0;">إدارة العساكر المسجلين</h3>
-                        <input type="text" id="searchInput" class="form-control" style="width: 180px;" placeholder="بحث..." onkeyup="filterOfficers()">
+                        <h3 class="card-title" style="margin:0;">👥 إدارة العساكر</h3>
+                        <input type="text" id="searchInput" class="form-control" style="width: 150px;" placeholder="بحث..." onkeyup="filterOfficers()">
                     </div>
 
                     <div class="table-container">
@@ -616,7 +730,6 @@
                                 <tr>
                                     <th>الرقم</th>
                                     <th>الاسم</th>
-                                    <th>الرتبة</th>
                                     <th>الحالة</th>
                                     <th>التحكم</th>
                                 </tr>
@@ -626,11 +739,29 @@
                     </div>
                 </div>
             </div>
+
+            <!-- إدارة Embeds المنشورة -->
+            <div class="card">
+                <h3 class="card-title">⚙️ التحكم بالإمبدات المنشورة</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>العنوان</th>
+                                <th>الجهة (الصفحة)</th>
+                                <th>تاريخ النشر</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminEmbedsTable"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <!-- 6. تبويب تعريف الدولة -->
+        <!-- 6. تعريف الدولة -->
         <div id="about" class="tab-content">
-            <h2 class="section-title">المبادئ الأساسية</h2>
+            <h2 class="section-title">المبادئ واللوائح الأساسية</h2>
             <div class="person-card">
                 <p class="person-desc" style="font-size: 16px; margin-bottom: 15px;">
                     <strong style="color:var(--primary);">السيادة:</strong> استقلال القرار وعدم الخضوع لأي كيان خارجي.
@@ -642,14 +773,17 @@
                     <strong style="color:var(--primary);">الحماية:</strong> الدفاع عن استقرار الدولة والمواطنين وممتلكاتهم.
                 </p>
             </div>
+
+            <!-- مكان ظهور الإمبدات الخاصة بصفحة تعريف الدولة -->
+            <div id="aboutEmbedsContainer"></div>
         </div>
     </main>
 
     <script>
-        // الرمز السري للإدارة (قم بتغييره من هنا)
-        const ADMIN_PASSWORD = "LSPD1234"; 
+        const ADMIN_PASSWORD = "LSPD1234"; // رمز دخول المسؤولين
         let isAdminLoggedIn = false;
 
+        // 1. التنقل بين التبويبات
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabcontent.length; i++) {
@@ -664,7 +798,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // حماية لوحة التحكم
+        // 2. التحقق من المسؤول
         function requestAdminAccess(evt) {
             if (isAdminLoggedIn) {
                 openTab(evt, 'admin');
@@ -692,7 +826,7 @@
             document.getElementById('authOverlay').style.display = 'none';
         }
 
-        // تشغيل الصوت
+        // 3. التحكم بالصوت
         const audio = document.getElementById('bgMusic');
         const audioIcon = document.getElementById('audioIcon');
         const audioText = document.getElementById('audioText');
@@ -714,38 +848,46 @@
             }
         }
 
-        // بيانات العساكر
-        let officers = JSON.parse(localStorage.getItem('lspd_officers_list')) || [
-            { id: 1, badge: "S-10", name: "Officer Ali", rank: "جندي أول", dept: "دورية عامة", status: "active" },
-            { id: 2, badge: "S-15", name: "Officer Saad", rank: "عريف", dept: "دعم وإسناد", status: "active" }
+        // 4. إدارة البيانات المحلية (LocalStorage)
+        let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [
+            { id: 1, badge: "S-10", name: "Officer Ali", rank: "جندي أول", dept: "دورية عامة", status: "active" }
+        ];
+
+        let protocols = JSON.parse(localStorage.getItem('lspd_protocols')) || [
+            { id: 1, code: "10-1", title: "مطاردة مركبة", desc: "تن - ون: البدء فوراً بفتح اللاسلكي وتحديد المسار." },
+            { id: 2, code: "10-2", title: "بلاغ غير صحيح", desc: "تن - تو: إلغاء الاستجابة والعودة للعمل الروتيني." },
+            { id: 3, code: "10-3", title: "استيقاف أمني", desc: "تن - ثري: طلب مساندة إلكترونية للتحقق من المركبة." },
+            { id: 4, code: "10-4", title: "صحيح / علم", desc: "تن - فور: تأكيد استلام التوجيه." }
+        ];
+
+        let embeds = JSON.parse(localStorage.getItem('lspd_embeds')) || [
+            { id: 1, title: "📢 بيان القيادة العليا", desc: "يُرجى من كافة الضباط والعساكر الالتزام بالزي الرسمي أثناء الدوريات وتأدية الواجب.", target: "home", color: "#ff7b00", date: "منذ قليل" }
         ];
 
         function saveData() {
-            localStorage.setItem('lspd_officers_list', JSON.stringify(officers));
-            renderAllTables();
+            localStorage.setItem('lspd_officers', JSON.stringify(officers));
+            localStorage.setItem('lspd_protocols', JSON.stringify(protocols));
+            localStorage.setItem('lspd_embeds', JSON.stringify(embeds));
+            renderAll();
         }
 
+        // --- العساكر ---
         function addOfficer() {
             const name = document.getElementById('officerName').value.trim();
             const badge = document.getElementById('badgeNumber').value.trim();
             const rank = document.getElementById('officerRank').value;
             const dept = document.getElementById('department').value;
 
-            if (!name || !badge) {
-                alert("يرجى كتابة الاسم والرقم العسكري!");
-                return;
-            }
+            if (!name || !badge) return alert("الرجاء كتابة الاسم والرقم العسكري!");
 
-            const newOfficer = { id: Date.now(), badge, name, rank, dept, status: "active" };
-            officers.push(newOfficer);
+            officers.push({ id: Date.now(), badge, name, rank, dept, status: "active" });
             saveData();
-
             document.getElementById('officerName').value = '';
             document.getElementById('badgeNumber').value = '';
         }
 
         function deleteOfficer(id) {
-            if (confirm("هل أنت متأكد من الحذف؟")) {
+            if (confirm("حذف العسكري؟")) {
                 officers = officers.filter(o => o.id !== id);
                 saveData();
             }
@@ -761,51 +903,149 @@
             }
         }
 
-        function renderAllTables() {
+        // --- البروتوكولات ---
+        function addProtocol() {
+            const code = document.getElementById('protocolCode').value.trim();
+            const title = document.getElementById('protocolTitle').value.trim();
+            const desc = document.getElementById('protocolDesc').value.trim();
+
+            if (!code || !title) return alert("يرجى كتابة الكود والعنوان!");
+
+            protocols.push({ id: Date.now(), code, title, desc });
+            saveData();
+            document.getElementById('protocolCode').value = '';
+            document.getElementById('protocolTitle').value = '';
+            document.getElementById('protocolDesc').value = '';
+        }
+
+        function deleteProtocol(id) {
+            if (confirm("حذف هذا البروتوكول؟")) {
+                protocols = protocols.filter(p => p.id !== id);
+                saveData();
+            }
+        }
+
+        // --- الإمبدات ---
+        function addEmbed() {
+            const title = document.getElementById('embedTitle').value.trim();
+            const target = document.getElementById('embedTarget').value;
+            const color = document.getElementById('embedColor').value;
+            const desc = document.getElementById('embedDesc').value.trim();
+
+            if (!title || !desc) return alert("يرجى تعبئة العنوان والمحتوى!");
+
+            const now = new Date();
+            const dateStr = `${now.getHours()}:${now.getMinutes()} - ${now.toLocaleDateString('ar-SA')}`;
+
+            embeds.push({ id: Date.now(), title, desc, target, color, date: dateStr });
+            saveData();
+
+            document.getElementById('embedTitle').value = '';
+            document.getElementById('embedDesc').value = '';
+            alert("تم نشر البطاقة بنجاح! 🎉");
+        }
+
+        function deleteEmbed(id) {
+            if (confirm("حذف هذه البطاقة؟")) {
+                embeds = embeds.filter(e => e.id !== id);
+                saveData();
+            }
+        }
+
+        // 5. عرض كافة البيانات بالصفحات
+        function renderAll() {
+            // الإحصائيات
             document.getElementById('homeTotalOfficers').textContent = officers.length;
             document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
+            document.getElementById('homeTotalProtocols').textContent = protocols.length;
 
-            const publicTbody = document.getElementById('publicOfficersTable');
-            publicTbody.innerHTML = '';
+            // جدول العساكر للعامة
+            const publicOfficersTbody = document.getElementById('publicOfficersTable');
+            publicOfficersTbody.innerHTML = officers.map(o => `
+                <tr>
+                    <td><span class="rank-badge" style="background:#332010; color:#fff;">${o.badge}</span></td>
+                    <td>${o.name}</td>
+                    <td>${o.rank}</td>
+                    <td>${o.dept}</td>
+                    <td>
+                        <span class="badge ${o.status === 'active' ? 'badge-active' : o.status === 'leave' ? 'badge-leave' : 'badge-suspended'}">
+                            ${o.status === 'active' ? 'على رأس العمل' : o.status === 'leave' ? 'في إجازة' : 'موقف'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">لا يوجد عساكر.</td></tr>`;
+
+            // جدول العساكر في الإدارة
+            const adminOfficersTbody = document.getElementById('adminOfficersTable');
+            adminOfficersTbody.innerHTML = officers.map(o => `
+                <tr>
+                    <td><strong>${o.badge}</strong></td>
+                    <td>${o.name}</td>
+                    <td>
+                        <span class="badge ${o.status === 'active' ? 'badge-active' : o.status === 'leave' ? 'badge-leave' : 'badge-suspended'}">
+                            ${o.status === 'active' ? 'ميداني' : o.status === 'leave' ? 'إجازة' : 'موقف'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn btn-status" onclick="toggleStatus(${o.id})">🔄</button>
+                        <button class="action-btn btn-delete" onclick="deleteOfficer(${o.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // جدول البروتوكولات للعامة
+            const publicProtocolsTbody = document.getElementById('publicProtocolsTable');
+            publicProtocolsTbody.innerHTML = protocols.map(p => `
+                <tr>
+                    <td><span class="rank-badge">${p.code}</span></td>
+                    <td><strong>${p.title}</strong></td>
+                    <td>${p.desc || 'لا توجد تفاصيل إضافية'}</td>
+                </tr>
+            `).join('') || `<tr><td colspan="3" style="text-align:center;">لا يوجد بروتوكولات.</td></tr>`;
+
+            // جدول البروتوكولات في الإدارة
+            const adminProtocolsTbody = document.getElementById('adminProtocolsTable');
+            adminProtocolsTbody.innerHTML = protocols.map(p => `
+                <tr>
+                    <td><strong>${p.code}</strong></td>
+                    <td>${p.title}</td>
+                    <td><button class="action-btn btn-delete" onclick="deleteProtocol(${p.id})">🗑️</button></td>
+                </tr>
+            `).join('');
+
+            // عرض الإمبدات بالصفحات المختلفة
+            const homeEmbeds = document.getElementById('homeEmbedsContainer');
+            const aboutEmbeds = document.getElementById('aboutEmbedsContainer');
             
-            if (officers.length === 0) {
-                publicTbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">لا يوجد عساكر مسجلين.</td></tr>`;
-            } else {
-                officers.forEach(o => {
-                    let badgeHtml = o.status === 'active' ? '<span class="badge badge-active">على رأس العمل</span>' :
-                                    o.status === 'leave' ? '<span class="badge badge-leave">في إجازة</span>' :
-                                    '<span class="badge badge-suspended">موقف</span>';
+            homeEmbeds.innerHTML = '';
+            aboutEmbeds.innerHTML = '';
 
-                    publicTbody.innerHTML += `
-                        <tr>
-                            <td><span class="rank-badge" style="background:#332010; color:#fff;">${o.badge}</span></td>
-                            <td>${o.name}</td>
-                            <td>${o.rank}</td>
-                            <td>${o.dept}</td>
-                            <td>${badgeHtml}</td>
-                        </tr>`;
-                });
-            }
+            embeds.forEach(e => {
+                const embedHtml = `
+                    <div class="custom-embed" style="--embed-color: ${e.color};">
+                        <div class="embed-title">
+                            <span>${e.title}</span>
+                            <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">📌 إعلان إداري</span>
+                        </div>
+                        <div class="embed-desc">${e.desc}</div>
+                        <div class="embed-footer">صادر عن القيادة العامة • ${e.date}</div>
+                    </div>
+                `;
 
-            const adminTbody = document.getElementById('adminOfficersTable');
-            adminTbody.innerHTML = '';
-            officers.forEach(o => {
-                let badgeHtml = o.status === 'active' ? '<span class="badge badge-active">ميداني</span>' :
-                                o.status === 'leave' ? '<span class="badge badge-leave">إجازة</span>' :
-                                '<span class="badge badge-suspended">موقف</span>';
-
-                adminTbody.innerHTML += `
-                    <tr>
-                        <td><strong>${o.badge}</strong></td>
-                        <td>${o.name}</td>
-                        <td>${o.rank}</td>
-                        <td>${badgeHtml}</td>
-                        <td>
-                            <button class="action-btn btn-status" onclick="toggleStatus(${o.id})">🔄 الحالة</button>
-                            <button class="action-btn btn-delete" onclick="deleteOfficer(${o.id})">🗑️ حذف</button>
-                        </td>
-                    </tr>`;
+                if (e.target === 'home') homeEmbeds.innerHTML += embedHtml;
+                if (e.target === 'about') aboutEmbeds.innerHTML += embedHtml;
             });
+
+            // جدول الإمبدات في لوحة التحكم
+            const adminEmbedsTbody = document.getElementById('adminEmbedsTable');
+            adminEmbedsTbody.innerHTML = embeds.map(e => `
+                <tr>
+                    <td><strong>${e.title}</strong></td>
+                    <td>${e.target === 'home' ? 'الصفحة الرئيسية' : 'تعريف الدولة'}</td>
+                    <td>${e.date}</td>
+                    <td><button class="action-btn btn-delete" onclick="deleteEmbed(${e.id})">🗑️ حذف</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" style="text-align:center;">لا يوجد إمبدات منشورة.</td></tr>`;
         }
 
         function filterOfficers() {
@@ -816,7 +1056,8 @@
             });
         }
 
-        renderAllTables();
+        // تشغيل البناء عند فتح الصفحة
+        renderAll();
     </script>
 </body>
 </html>
