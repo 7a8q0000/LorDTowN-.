@@ -675,6 +675,26 @@
         <div id="admin" class="tab-content">
             <h2 class="section-title">🛡️ لوحة التحكم والإدارة</h2>
 
+            <!-- ربط المباشر ببوت ديسكورد -->
+            <div class="card" style="margin-bottom: 20px;">
+                <h3 class="card-title">🤖 ربط وتمرير رتبة عبر البوت</h3>
+                <div class="admin-grid">
+                    <div class="form-group">
+                        <label>ID السيرفر (Guild ID):</label>
+                        <input type="text" id="discordGuildId" class="form-control" placeholder="ادخل">
+                    </div>
+                    <div class="form-group">
+                        <label>ID المستخدم (User ID):</label>
+                        <input type="text" id="discordUserId" class="form-control" placeholder="أدخل آيدي العضو">
+                    </div>
+                    <div class="form-group">
+                        <label>ID الرتبة (Role ID):</label>
+                        <input type="text" id="discordRoleId" class="form-control" placeholder="أدخل آيدي الرتبة">
+                    </div>
+                </div>
+                <button class="btn-add" onclick="triggerBotRole()">تحديث وإعطاء الرتبة بالديسكورد</button>
+            </div>
+
             <!-- تعديل التنبيه المباشر -->
             <div class="card" style="margin-bottom: 20px;">
                 <h3 class="card-title">📢 تحديث شريط التنبيهات المباشرة</h3>
@@ -764,6 +784,49 @@
     <script>
         const ADMIN_PASSWORD = "LSPD1234";
         let isAdminLoggedIn = false;
+
+        // --- دالة الربط المباشر مع البوت ---
+        async function giveRoleToUser(userId, roleId, guildId) {
+            try {
+                // استبدل YOUR_SERVER_IP بـ IP السيرفر الخارجي الذي يعمل عليه البوت
+                const response = await fetch('http://1534631656105967716:3000/api/give-role', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': 'LordTown' // نفس الـ API Key المكتوب بملف api.js
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        roleId: roleId,
+                        guildId: guildId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ تم منح الرتبة للمستخدم عبر البوت بنجاح!');
+                } else {
+                    alert('❌ حدث خطأ من البوت: ' + result.error);
+                }
+            } catch (error) {
+                console.error('تعذر الاتصال بالبوت:', error);
+                alert('❌ تعذر الاتصال بسيرفر البوت، تأكد من تشغيل البوت والمنفذ 3000.');
+            }
+        }
+
+        function triggerBotRole() {
+            const guildId = document.getElementById('discordGuildId').value.trim();
+            const userId = document.getElementById('discordUserId').value.trim();
+            const roleId = document.getElementById('discordRoleId').value.trim();
+
+            if (!guildId || !userId || !roleId) {
+                alert('يرجى ملء جميع الحقول الخاصة بربط البوت (Guild, User, Role ID)!');
+                return;
+            }
+
+            giveRoleToUser(userId, roleId, guildId);
+        }
 
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
@@ -983,3 +1046,4 @@
     </script>
 </body>
 </html>
+
