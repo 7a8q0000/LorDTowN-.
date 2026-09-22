@@ -185,54 +185,6 @@
             font-weight: 700;
         }
 
-        /* تنسيق الإمبدات Embeds */
-        .custom-embed {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .custom-embed::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 5px;
-            background: var(--embed-color, var(--primary));
-        }
-
-        .embed-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-light);
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .embed-desc {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.8;
-            white-space: pre-line;
-        }
-
-        .embed-footer {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            font-size: 12px;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
         .person-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -376,11 +328,6 @@
             outline: none;
         }
 
-        textarea.form-control {
-            resize: vertical;
-            min-height: 80px;
-        }
-
         .form-control:focus { border-color: var(--primary); }
 
         .btn-add {
@@ -467,6 +414,138 @@
             text-align: center;
             box-shadow: 0 0 20px var(--primary-glow);
         }
+
+        /* --- تصميم الباج العسكري للطباعة --- */
+        .badge-preview-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #080503;
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .military-badge {
+            width: 320px;
+            height: 480px;
+            background: linear-gradient(135deg, #1f130a 0%, #0a0603 100%);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .military-badge::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 8px;
+            background: var(--primary);
+        }
+
+        .badge-header-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .badge-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .badge-photo {
+            width: 110px;
+            height: 120px;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+            background: #1a1108;
+            margin-bottom: 15px;
+        }
+
+        .badge-info {
+            width: 100%;
+            text-align: right;
+            font-size: 13px;
+        }
+
+        .badge-info-item {
+            background: rgba(255, 123, 0, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .badge-info-item span.label {
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .badge-info-item span.val {
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .badge-barcode {
+            margin-top: auto;
+            font-family: monospace;
+            font-size: 16px;
+            letter-spacing: 4px;
+            background: #fff;
+            color: #000;
+            padding: 4px 15px;
+            border-radius: 4px;
+            font-weight: 900;
+        }
+
+        /* إعدادات الطباعة للورق */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+            #printArea {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+            .military-badge {
+                border: 2px solid #000 !important;
+                background: #fff !important;
+                color: #000 !important;
+                box-shadow: none !important;
+            }
+            .badge-header-title, .badge-info-item span.val {
+                color: #000 !important;
+            }
+            .badge-info-item {
+                background: #f0f0f0 !important;
+                border: 1px solid #ccc !important;
+            }
+            .badge-info-item span.label {
+                color: #555 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -532,17 +611,14 @@
                     <div class="label">على رأس العمل</div>
                 </div>
                 <div class="stat-box">
-                    <div class="number" id="homeTotalProtocols">0</div>
-                    <div class="label">عدد البروتوكولات</div>
+                    <div class="number">8</div>
+                    <div class="label">رتب رئيسية</div>
                 </div>
                 <div class="stat-box">
                     <div class="number">24/7</div>
                     <div class="label">جاهزية دائمة</div>
                 </div>
             </div>
-
-            <!-- مكان عرض الإمبدات والإعلانات في الرئيسية -->
-            <div id="homeEmbedsContainer"></div>
         </div>
 
         <!-- 2. القادات -->
@@ -577,10 +653,14 @@
                         <tr>
                             <th>الكود / الاختصار</th>
                             <th>البلاغ / المعنى</th>
-                            <th>التفاصيل والتعليمات</th>
                         </tr>
                     </thead>
-                    <tbody id="publicProtocolsTable"></tbody>
+                    <tbody>
+                        <tr><td><span class="rank-badge">10-1</span></td><td>مطاردة مركبة (تن - ون)</td></tr>
+                        <tr><td><span class="rank-badge">10-2</span></td><td>بلاغ غير صحيح (تن - تو)</td></tr>
+                        <tr><td><span class="rank-badge">10-3</span></td><td>استيقاف أمني (تن - ثري)</td></tr>
+                        <tr><td><span class="rank-badge">10-4</span></td><td>صحيح / علم (تن - فور)</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -604,74 +684,85 @@
             </div>
         </div>
 
-        <!-- 5. لوحة المسؤولين (تعديل كامل ومتقدم) -->
+        <!-- 5. لوحة المسؤولين (شاملة نظام طباعة الباج العسكري) -->
         <div id="admin" class="tab-content">
-            <h2 class="section-title">🛡️ لوحة الإدارة والتحكم الشامل</h2>
+            <h2 class="section-title">🛡️ لوحة التحكم ونظام طباعة الباج العسكري</h2>
             
-            <!-- أداة إضافة امبد/إعلان -->
+            <!-- أداة طباعة الباج العسكري -->
             <div class="card">
-                <h3 class="card-title">📌 نشر إعلان / بطاقة (Embed) جديد</h3>
+                <h3 class="card-title">🪪 نظام طباعة الباج العسكري (الإنشاء والطباعة)</h3>
                 <div class="admin-grid">
                     <div>
                         <div class="form-group">
-                            <label>عنوان البطاقة / الإعلان:</label>
-                            <input type="text" id="embedTitle" class="form-control" placeholder="مثال: تعليمات جديدة بشأن التداهمات">
+                            <label>اسم العسكري الكامل:</label>
+                            <input type="text" id="badgeInputName" class="form-control" placeholder="مثال: خالد العتيبي" oninput="updateBadgePreview()">
                         </div>
+
                         <div class="form-group">
-                            <label>مكان النشر:</label>
-                            <select id="embedTarget" class="form-control">
-                                <option value="home">الصفحة الرئيسية</option>
-                                <option value="about">صفحة تعريف الدولة</option>
+                            <label>الرقم العسكري (Badge ID):</label>
+                            <input type="text" id="badgeInputId" class="form-control" placeholder="مثال: S-501" oninput="updateBadgePreview()">
+                        </div>
+
+                        <div class="form-group">
+                            <label>الرتبة العسكرية:</label>
+                            <select id="badgeInputRank" class="form-control" onchange="updateBadgePreview()">
+                                <option value="ملازم أول">ملازم أول</option>
+                                <option value="ملازم">ملازم</option>
+                                <option value="رئيس رقباء">رئيس رقباء</option>
+                                <option value="رقيب أول">رقيب أول</option>
+                                <option value="رقيب">رقيب</option>
+                                <option value="عريف">عريف</option>
+                                <option value="جندي أول">جندي أول</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>لون الشريط الجانبي (Embed Color):</label>
-                            <input type="color" id="embedColor" class="form-control" value="#ff7b00" style="height: 40px; cursor: pointer;">
-                        </div>
-                    </div>
-                    <div>
-                        <div class="form-group">
-                            <label>محتوى التفاصيل:</label>
-                            <textarea id="embedDesc" class="form-control" placeholder="أكتب التفاصيل هنا..." style="height: 120px;"></textarea>
-                        </div>
-                        <button class="btn-add" onclick="addEmbed()">نشر البطاقة الإدارية 🚀</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- أداة إضافة وتعديل البروتوكولات -->
-            <div class="card">
-                <h3 class="card-title">📜 إضافة / تعديل البروتوكولات الأمنيّة</h3>
-                <div class="admin-grid">
-                    <div style="grid-column: span 1;">
                         <div class="form-group">
-                            <label>اسم الاختصار / الكود:</label>
-                            <input type="text" id="protocolCode" class="form-control" placeholder="مثال: 10-20">
+                            <label>القطاع / القسم:</label>
+                            <select id="badgeInputDept" class="form-control" onchange="updateBadgePreview()">
+                                <option value="دورية عامة">دورية عامة</option>
+                                <option value="دعم وإسناد">دعم وإسناد</option>
+                                <option value="المهام الخاصة SWAT">المهام الخاصة SWAT</option>
+                                <option value="المباحث والجنايات">المباحث والجنايات</option>
+                            </select>
                         </div>
+
                         <div class="form-group">
-                            <label>نوع البلاغ / العنوان:</label>
-                            <input type="text" id="protocolTitle" class="form-control" placeholder="مثال: تحديد الموقع">
+                            <label>رابط الصورة الشخصية (اخيلاري):</label>
+                            <input type="text" id="badgeInputPhoto" class="form-control" placeholder="ضع رابط صورة هنا..." oninput="updateBadgePreview()">
                         </div>
-                        <div class="form-group">
-                            <label>التفاصيل والإجراء المطلوب:</label>
-                            <input type="text" id="protocolDesc" class="form-control" placeholder="مثال: إرسال الإحداثيات فوراً على اللاسلكي">
-                        </div>
-                        <button class="btn-add" onclick="addProtocol()">حفظ البروتوكول ➕</button>
+
+                        <button class="btn-add" onclick="printBadge()" style="margin-top: 10px;">🖨️ طباعة الباج العسكري الآن</button>
                     </div>
-                    
-                    <div>
-                        <label style="font-size:13px; color:var(--text-muted); font-weight:700;">البروتوكولات الحالية:</label>
-                        <div class="table-container" style="max-height: 250px; overflow-y: auto; margin-top: 5px;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>الكود</th>
-                                        <th>البلاغ</th>
-                                        <th>حذف</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminProtocolsTable"></tbody>
-                            </table>
+
+                    <!-- معاينة الباج المباشرة -->
+                    <div class="badge-preview-area">
+                        <label style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px; font-weight: 700;">معاينة البطاقة قبل الطباعة:</label>
+                        
+                        <div id="printArea">
+                            <div class="military-badge">
+                                <div class="badge-header-title">LSPD POLICE</div>
+                                <div class="badge-subtitle">الباقة الأمنية الرسمية</div>
+                                <img id="previewPhoto" class="badge-photo" src="https://i.imgur.com/x0qB1V3.png" alt="العسكري">
+                                <div class="badge-info">
+                                    <div class="badge-info-item">
+                                        <span class="label">الاسم:</span>
+                                        <span class="val" id="previewName">خالد العتيبي</span>
+                                    </div>
+                                    <div class="badge-info-item">
+                                        <span class="label">الرقم العسكري:</span>
+                                        <span class="val" id="previewId">S-501</span>
+                                    </div>
+                                    <div class="badge-info-item">
+                                        <span class="label">الرتبة:</span>
+                                        <span class="val" id="previewRank">ملازم أول</span>
+                                    </div>
+                                    <div class="badge-info-item">
+                                        <span class="label">القسم:</span>
+                                        <span class="val" id="previewDept">دورية عامة</span>
+                                    </div>
+                                </div>
+                                <div class="badge-barcode" id="previewBarcode">||||| S-501 |||||</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -680,7 +771,7 @@
             <!-- إدارة الكادر العسكري -->
             <div class="admin-grid">
                 <div class="card">
-                    <h3 class="card-title">🎖️ إضافة عسكري جديد</h3>
+                    <h3 class="card-title">🎖️ إضافة عسكري جديد للنظام</h3>
                     
                     <div class="form-group">
                         <label>اسم العسكري:</label>
@@ -739,24 +830,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- إدارة Embeds المنشورة -->
-            <div class="card">
-                <h3 class="card-title">⚙️ التحكم بالإمبدات المنشورة</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>العنوان</th>
-                                <th>الجهة (الصفحة)</th>
-                                <th>تاريخ النشر</th>
-                                <th>حذف</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminEmbedsTable"></tbody>
-                    </table>
-                </div>
-            </div>
         </div>
 
         <!-- 6. تعريف الدولة -->
@@ -773,9 +846,6 @@
                     <strong style="color:var(--primary);">الحماية:</strong> الدفاع عن استقرار الدولة والمواطنين وممتلكاتهم.
                 </p>
             </div>
-
-            <!-- مكان ظهور الإمبدات الخاصة بصفحة تعريف الدولة -->
-            <div id="aboutEmbedsContainer"></div>
         </div>
     </main>
 
@@ -848,30 +918,16 @@
             }
         }
 
-        // 4. إدارة البيانات المحلية (LocalStorage)
+        // 4. إدارة العساكر
         let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [
             { id: 1, badge: "S-10", name: "Officer Ali", rank: "جندي أول", dept: "دورية عامة", status: "active" }
         ];
 
-        let protocols = JSON.parse(localStorage.getItem('lspd_protocols')) || [
-            { id: 1, code: "10-1", title: "مطاردة مركبة", desc: "تن - ون: البدء فوراً بفتح اللاسلكي وتحديد المسار." },
-            { id: 2, code: "10-2", title: "بلاغ غير صحيح", desc: "تن - تو: إلغاء الاستجابة والعودة للعمل الروتيني." },
-            { id: 3, code: "10-3", title: "استيقاف أمني", desc: "تن - ثري: طلب مساندة إلكترونية للتحقق من المركبة." },
-            { id: 4, code: "10-4", title: "صحيح / علم", desc: "تن - فور: تأكيد استلام التوجيه." }
-        ];
-
-        let embeds = JSON.parse(localStorage.getItem('lspd_embeds')) || [
-            { id: 1, title: "📢 بيان القيادة العليا", desc: "يُرجى من كافة الضباط والعساكر الالتزام بالزي الرسمي أثناء الدوريات وتأدية الواجب.", target: "home", color: "#ff7b00", date: "منذ قليل" }
-        ];
-
         function saveData() {
             localStorage.setItem('lspd_officers', JSON.stringify(officers));
-            localStorage.setItem('lspd_protocols', JSON.stringify(protocols));
-            localStorage.setItem('lspd_embeds', JSON.stringify(embeds));
             renderAll();
         }
 
-        // --- العساكر ---
         function addOfficer() {
             const name = document.getElementById('officerName').value.trim();
             const badge = document.getElementById('badgeNumber').value.trim();
@@ -903,63 +959,36 @@
             }
         }
 
-        // --- البروتوكولات ---
-        function addProtocol() {
-            const code = document.getElementById('protocolCode').value.trim();
-            const title = document.getElementById('protocolTitle').value.trim();
-            const desc = document.getElementById('protocolDesc').value.trim();
+        // 5. التحديث المباشر للباج العسكري + الطباعة
+        function updateBadgePreview() {
+            const name = document.getElementById('badgeInputName').value.trim() || "خالد العتيبي";
+            const badgeId = document.getElementById('badgeInputId').value.trim() || "S-501";
+            const rank = document.getElementById('badgeInputRank').value;
+            const dept = document.getElementById('badgeInputDept').value;
+            const photo = document.getElementById('badgeInputPhoto').value.trim();
 
-            if (!code || !title) return alert("يرجى كتابة الكود والعنوان!");
+            document.getElementById('previewName').textContent = name;
+            document.getElementById('previewId').textContent = badgeId;
+            document.getElementById('previewRank').textContent = rank;
+            document.getElementById('previewDept').textContent = dept;
+            document.getElementById('previewBarcode').textContent = `||||| ${badgeId} |||||`;
 
-            protocols.push({ id: Date.now(), code, title, desc });
-            saveData();
-            document.getElementById('protocolCode').value = '';
-            document.getElementById('protocolTitle').value = '';
-            document.getElementById('protocolDesc').value = '';
-        }
-
-        function deleteProtocol(id) {
-            if (confirm("حذف هذا البروتوكول؟")) {
-                protocols = protocols.filter(p => p.id !== id);
-                saveData();
+            if (photo) {
+                document.getElementById('previewPhoto').src = photo;
+            } else {
+                document.getElementById('previewPhoto').src = "https://i.imgur.com/x0qB1V3.png";
             }
         }
 
-        // --- الإمبدات ---
-        function addEmbed() {
-            const title = document.getElementById('embedTitle').value.trim();
-            const target = document.getElementById('embedTarget').value;
-            const color = document.getElementById('embedColor').value;
-            const desc = document.getElementById('embedDesc').value.trim();
-
-            if (!title || !desc) return alert("يرجى تعبئة العنوان والمحتوى!");
-
-            const now = new Date();
-            const dateStr = `${now.getHours()}:${now.getMinutes()} - ${now.toLocaleDateString('ar-SA')}`;
-
-            embeds.push({ id: Date.now(), title, desc, target, color, date: dateStr });
-            saveData();
-
-            document.getElementById('embedTitle').value = '';
-            document.getElementById('embedDesc').value = '';
-            alert("تم نشر البطاقة بنجاح! 🎉");
+        function printBadge() {
+            window.print();
         }
 
-        function deleteEmbed(id) {
-            if (confirm("حذف هذه البطاقة؟")) {
-                embeds = embeds.filter(e => e.id !== id);
-                saveData();
-            }
-        }
-
-        // 5. عرض كافة البيانات بالصفحات
+        // 6. عرض البيانات بالجدول
         function renderAll() {
-            // الإحصائيات
             document.getElementById('homeTotalOfficers').textContent = officers.length;
             document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
-            document.getElementById('homeTotalProtocols').textContent = protocols.length;
 
-            // جدول العساكر للعامة
             const publicOfficersTbody = document.getElementById('publicOfficersTable');
             publicOfficersTbody.innerHTML = officers.map(o => `
                 <tr>
@@ -975,7 +1004,6 @@
                 </tr>
             `).join('') || `<tr><td colspan="5" style="text-align:center;">لا يوجد عساكر.</td></tr>`;
 
-            // جدول العساكر في الإدارة
             const adminOfficersTbody = document.getElementById('adminOfficersTable');
             adminOfficersTbody.innerHTML = officers.map(o => `
                 <tr>
@@ -992,60 +1020,6 @@
                     </td>
                 </tr>
             `).join('');
-
-            // جدول البروتوكولات للعامة
-            const publicProtocolsTbody = document.getElementById('publicProtocolsTable');
-            publicProtocolsTbody.innerHTML = protocols.map(p => `
-                <tr>
-                    <td><span class="rank-badge">${p.code}</span></td>
-                    <td><strong>${p.title}</strong></td>
-                    <td>${p.desc || 'لا توجد تفاصيل إضافية'}</td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">لا يوجد بروتوكولات.</td></tr>`;
-
-            // جدول البروتوكولات في الإدارة
-            const adminProtocolsTbody = document.getElementById('adminProtocolsTable');
-            adminProtocolsTbody.innerHTML = protocols.map(p => `
-                <tr>
-                    <td><strong>${p.code}</strong></td>
-                    <td>${p.title}</td>
-                    <td><button class="action-btn btn-delete" onclick="deleteProtocol(${p.id})">🗑️</button></td>
-                </tr>
-            `).join('');
-
-            // عرض الإمبدات بالصفحات المختلفة
-            const homeEmbeds = document.getElementById('homeEmbedsContainer');
-            const aboutEmbeds = document.getElementById('aboutEmbedsContainer');
-            
-            homeEmbeds.innerHTML = '';
-            aboutEmbeds.innerHTML = '';
-
-            embeds.forEach(e => {
-                const embedHtml = `
-                    <div class="custom-embed" style="--embed-color: ${e.color};">
-                        <div class="embed-title">
-                            <span>${e.title}</span>
-                            <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">📌 إعلان إداري</span>
-                        </div>
-                        <div class="embed-desc">${e.desc}</div>
-                        <div class="embed-footer">صادر عن القيادة العامة • ${e.date}</div>
-                    </div>
-                `;
-
-                if (e.target === 'home') homeEmbeds.innerHTML += embedHtml;
-                if (e.target === 'about') aboutEmbeds.innerHTML += embedHtml;
-            });
-
-            // جدول الإمبدات في لوحة التحكم
-            const adminEmbedsTbody = document.getElementById('adminEmbedsTable');
-            adminEmbedsTbody.innerHTML = embeds.map(e => `
-                <tr>
-                    <td><strong>${e.title}</strong></td>
-                    <td>${e.target === 'home' ? 'الصفحة الرئيسية' : 'تعريف الدولة'}</td>
-                    <td>${e.date}</td>
-                    <td><button class="action-btn btn-delete" onclick="deleteEmbed(${e.id})">🗑️ حذف</button></td>
-                </tr>
-            `).join('') || `<tr><td colspan="4" style="text-align:center;">لا يوجد إمبدات منشورة.</td></tr>`;
         }
 
         function filterOfficers() {
@@ -1056,7 +1030,6 @@
             });
         }
 
-        // تشغيل البناء عند فتح الصفحة
         renderAll();
     </script>
 </body>
