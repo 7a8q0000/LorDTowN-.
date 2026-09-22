@@ -1125,6 +1125,40 @@
                 row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
             });
         }
+<script>
+    const API_BASE = "https://03gqislej5.apps.bot-hosting.cloud";
+
+    // رابط تسجيل الدخول
+    function loginWithDiscord() {
+        window.location.href = `${API_BASE}/api/auth/login`;
+    }
+
+    // استلام البيانات تلقائياً وتعبئتها في الواجهة
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userParam = urlParams.get('user');
+
+        if (userParam) {
+            try {
+                const userData = JSON.parse(decodeURIComponent(userParam));
+
+                // تعبئة البيانات التلقائية في الخانات المخصصة لها (تأكد من مطابقة الـ ID في عناصر HTML)
+                if (document.getElementById('policeName')) {
+                    document.getElementById('policeName').value = userData.serverName;
+                }
+                if (document.getElementById('rankName')) {
+                    document.getElementById('rankName').value = userData.rankName;
+                }
+                if (document.getElementById('rankLevel')) {
+                    document.getElementById('rankLevel').value = userData.rankLevel;
+                }
+
+                console.log("تم جلب البيانات بنجاح:", userData);
+            } catch (err) {
+                console.error("خطأ في قراءة بيانات المستخدم:", err);
+            }
+        }
+    });
 
         renderAll();
     </script>
