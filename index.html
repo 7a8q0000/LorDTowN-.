@@ -18,6 +18,7 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --discord: #5865F2;
         }
 
         * {
@@ -99,6 +100,46 @@
             border-radius: 50%;
             border: 2px solid var(--primary);
             box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .user-profile-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .discord-btn {
+            background: var(--discord);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .discord-btn:hover {
+            opacity: 0.9;
+        }
+
+        .user-card-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-card-head img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
         }
 
         .nav-links {
@@ -483,7 +524,13 @@
                 <img src="https://i.imgur.com/x0qB1V3.png" alt="Logo"> 
                 دولة LSPD
             </div>
-            <div id="adminBadgeStatus" style="font-size: 12px; color: var(--success); display: none;">✅ مسؤول مسجل دخول</div>
+
+            <!-- زر وواجهة تسجيل دخول ديسكورد -->
+            <div class="user-profile-box" id="userProfileBox">
+                <button class="discord-btn" onclick="loginWithDiscord()">
+                    <span>🔑</span> دخول عبر Discord
+                </button>
+            </div>
         </div>
         <div class="nav-links">
             <button class="active" onclick="openTab(event, 'home')">الرئيسية</button>
@@ -681,7 +728,7 @@
                 <div class="admin-grid">
                     <div class="form-group">
                         <label>ID السيرفر (Guild ID):</label>
-                        <input type="text" id="discordGuildId" class="form-control" placeholder="ادخل">
+                        <input type="text" id="discordGuildId" class="form-control" placeholder="أدخل آيدي السيرفر">
                     </div>
                     <div class="form-group">
                         <label>ID المستخدم (User ID):</label>
@@ -782,24 +829,67 @@
     </main>
 
     <script>
+        const API_BASE = "http://YOUR_SERVER_IP:3000"; // قم بتعديل هذا مع IP سيرفرك
         const ADMIN_PASSWORD = "LSPD1234";
         let isAdminLoggedIn = false;
+
+        // --- نظام تسجيل الدخول عبر Discord OAuth2 ---
+        function loginWithDiscord() {
+            window.location.href = `${API_BASE}/api/auth/login`;
+        }
+
+        function logoutDiscord() {
+            localStorage.removeItem('discord_user');
+            window.location.reload();
+        }
+
+        // قراءة بيانات المستخدم المسجل فور تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userParam = urlParams.get('user');
+
+            if (userParam) {
+                try {
+                    const userData = JSON.parse(decodeURIComponent(userParam));
+                    localStorage.setItem('discord_user', JSON.stringify(userData));
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } catch(e) { console.error(e); }
+            }
+
+            checkDiscordUserStatus();
+        });
+
+        function checkDiscordUserStatus() {
+            const savedUser = JSON.parse(localStorage.getItem('discord_user'));
+            const profileBox = document.getElementById('userProfileBox');
+
+            if (savedUser) {
+                profileBox.innerHTML = `
+                    <div class="user-card-head">
+                        <img src="${savedUser.avatar}" alt="Avatar">
+                        <div style="font-size:13px; font-weight:700;">${savedUser.nickname}</div>
+                        <button onclick="logoutDiscord()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold; font-size:12px;">خروج</button>
+                    </div>
+                `;
+                
+                // تلقائياً تعبئة خانات التقديم باسم المستخدم
+                const reqNameInput = document.getElementById('reqName');
+                if (reqNameInput && !reqNameInput.value) {
+                    reqNameInput.value = savedUser.nickname;
+                }
+            }
+        }
 
         // --- دالة الربط المباشر مع البوت ---
         async function giveRoleToUser(userId, roleId, guildId) {
             try {
-                // استبدل YOUR_SERVER_IP بـ IP السيرفر الخارجي الذي يعمل عليه البوت
-                const response = await fetch('http://1534631656105967716:3000/api/give-role', {
+                const response = await fetch(`${API_BASE}/api/give-role`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-api-key': 'LordTown' // نفس الـ API Key المكتوب بملف api.js
+                        'x-api-key': 'LordTown'
                     },
-                    body: JSON.stringify({
-                        userId: userId,
-                        roleId: roleId,
-                        guildId: guildId
-                    })
+                    body: JSON.stringify({ userId, roleId, guildId })
                 });
 
                 const result = await response.json();
@@ -856,7 +946,6 @@
             if (pwd === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
                 document.getElementById('authOverlay').style.display = 'none';
-                document.getElementById('adminBadgeStatus').style.display = 'block';
                 openTab(null, 'admin');
                 document.querySelectorAll('.nav-links button')[6].classList.add('active');
             } else {
@@ -890,7 +979,7 @@
             }
         }
 
-        // إدارة العساكر والطلبات والتنبيهات
+        // إدارة البيانات المحلية
         let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [
             { id: 1, badge: "S-10", name: "Officer Ali", rank: "جندي أول", dept: "دورية عامة", status: "active" }
         ];
@@ -934,7 +1023,6 @@
             }
         }
 
-        // إدارة التنبيهات المباشرة
         function updateLiveAlert() {
             const txt = document.getElementById('newAlertInput').value.trim();
             if (txt) {
@@ -944,7 +1032,6 @@
             }
         }
 
-        // إرسال الطلبات
         function submitRequest() {
             const name = document.getElementById('reqName').value.trim();
             const type = document.getElementById('reqType').value;
@@ -972,7 +1059,6 @@
             document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
             document.getElementById('homeTotalRequests').textContent = requests.filter(r => r.status === 'pending').length;
 
-            // الجدول العام للعساكر
             const publicOfficersTbody = document.getElementById('publicOfficersTable');
             publicOfficersTbody.innerHTML = officers.map(o => `
                 <tr>
@@ -988,7 +1074,6 @@
                 </tr>
             `).join('') || `<tr><td colspan="5" style="text-align:center;">لا يوجد عساكر.</td></tr>`;
 
-            // جدول تحكم العساكر للمسؤول
             const adminOfficersTbody = document.getElementById('adminOfficersTable');
             adminOfficersTbody.innerHTML = officers.map(o => `
                 <tr>
@@ -1006,7 +1091,6 @@
                 </tr>
             `).join('');
 
-            // عرض الطلبات للعموم
             const publicReqTbody = document.getElementById('publicRequestsTable');
             publicReqTbody.innerHTML = requests.map(r => `
                 <tr>
@@ -1020,7 +1104,6 @@
                 </tr>
             `).join('') || `<tr><td colspan="3" style="text-align:center;">لا توجد طلبات حالياً.</td></tr>`;
 
-            // عرض الطلبات للمسؤول
             const adminReqTbody = document.getElementById('adminRequestsTable');
             adminReqTbody.innerHTML = requests.filter(r => r.status === 'pending').map(r => `
                 <tr>
@@ -1046,4 +1129,3 @@
     </script>
 </body>
 </html>
-
