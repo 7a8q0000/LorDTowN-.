@@ -244,7 +244,7 @@
             border-radius: 12px;
             border: 1px solid var(--border-color);
             overflow-x: auto;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         table {
@@ -256,16 +256,16 @@
         th {
             background: rgba(255, 123, 0, 0.05);
             color: var(--primary);
-            padding: 14px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 13px;
             font-weight: 800;
             border-bottom: 1px solid var(--border-color);
         }
 
         td {
-            padding: 14px;
+            padding: 12px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-light);
         }
@@ -341,6 +341,7 @@
             font-weight: 800;
             cursor: pointer;
             transition: 0.2s;
+            margin-bottom: 15px;
         }
 
         .btn-add:hover { background: var(--primary-hover); }
@@ -349,14 +350,14 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             padding: 4px 8px;
             border-radius: 6px;
             font-weight: 700;
         }
 
         .btn-delete { color: var(--danger); }
-        .btn-delete:hover { background: rgba(239, 68, 68, 0.1); }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.2); }
         .btn-status { color: var(--primary); }
         .btn-status:hover { background: rgba(255, 123, 0, 0.1); }
 
@@ -446,8 +447,8 @@
             <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">ادخل الرمز السري للتحكم بالنظام وإدارة الكادر:</p>
             <input type="password" id="adminPasswordInput" class="form-control" placeholder="رمز الدخول..." style="margin-bottom: 15px; text-align: center; font-size: 18px;">
             <div style="display: flex; gap: 10px;">
-                <button class="btn-add" onclick="checkAdminAuth()">دخول</button>
-                <button class="btn-add" style="background: var(--border-color); color: #fff;" onclick="closeAuthModal()">إلغاء</button>
+                <button class="btn-add" style="margin-bottom:0;" onclick="checkAdminAuth()">دخول</button>
+                <button class="btn-add" style="background: var(--border-color); color: #fff; margin-bottom:0;" onclick="closeAuthModal()">إلغاء</button>
             </div>
         </div>
     </div>
@@ -535,7 +536,6 @@
                     <label>الوحدة / الفرقة الميدانية:</label>
                     <input type="text" id="deptName" class="form-control" readonly placeholder="في انتظار التوزيع من القيادة..." style="color: var(--primary); font-weight: bold;">
                 </div>
-                <p style="font-size:12px; color:var(--text-muted); text-align:center;">* ملاحظة: يتم تعيين وتحديث هذه البيانات حصرياً من قِبل القيادة العليا عبر لوحة التحكم.</p>
             </div>
         </div>
 
@@ -646,7 +646,7 @@
 
         <!-- 6. القائمة العسكرية العامة -->
         <div id="soldiers" class="tab-content">
-            <h2 class="section-title">🎖️ القائمة العامة للعساكر والباجات Mapped</h2>
+            <h2 class="section-title">🎖️ القائمة العامة للعساكر والباجات</h2>
 
             <div class="table-container">
                 <table>
@@ -705,7 +705,7 @@
                     <button class="btn-add" onclick="addOfficerByAdmin()">اعتماد العسكري</button>
                 </div>
 
-                <!-- إدارة قائمة الأسلحة العامة -->
+                <!-- إدارة الأسلحة في لوحة القيادة -->
                 <div class="card">
                     <h3 class="card-title">🔫 إدارة الأسلحة المصرحة عامةً</h3>
                     <div class="form-group">
@@ -715,9 +715,23 @@
                         <input type="text" id="newWeaponRank" class="form-control" placeholder="الصلاحية (مثال: جميع الرتب / SWAT)">
                     </div>
                     <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addWeapon()">إضافة سلاح جديد للقائمة</button>
+                    
+                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 قائمة الأسلحة الحالية (للحذف):</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>السلاح</th>
+                                    <th>الصلاحية</th>
+                                    <th>حذف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminWeaponsTable"></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <!-- إدارة قائمة المركبات العامة -->
+                <!-- إدارة المركبات في لوحة القيادة -->
                 <div class="card">
                     <h3 class="card-title">🚔 إدارة المركبات المصرحة عامةً</h3>
                     <div class="form-group">
@@ -727,6 +741,20 @@
                         <input type="text" id="newVehicleDept" class="form-control" placeholder="القطاع / الاستخدام (مثال: دورية عامة / مطاردات)">
                     </div>
                     <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addVehicle()">إضافة مركبة جديدة للقائمة</button>
+                    
+                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 قائمة المركبات الحالية (للحذف):</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>المركبة</th>
+                                    <th>الاستخدام</th>
+                                    <th>حذف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminVehiclesTable"></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- طلبات الإجازات المعلقة -->
@@ -850,7 +878,6 @@
         let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [];
         let requests = JSON.parse(localStorage.getItem('lspd_requests')) || [];
         
-        // القوائم العامة للاسلحة والمركبات
         let weaponsList = JSON.parse(localStorage.getItem('lspd_weapons')) || [
             { id: 1, name: "Taser Stun Gun", rank: "جميع الرتب" },
             { id: 2, name: "Combat Pistol", rank: "جندي فما فوق" },
@@ -1004,21 +1031,39 @@
             document.getElementById('homeLeaveOfficers').textContent = officers.filter(o => o.status === 'leave').length;
             document.getElementById('homeTotalRequests').textContent = requests.filter(r => r.status === 'pending').length;
 
-            // عرض الأسلحة العامة
+            // 1. عرض الأسلحة العامة
             document.getElementById('publicWeaponsTable').innerHTML = weaponsList.map(w => `
                 <tr>
                     <td><strong>${w.name}</strong></td>
-                    <td><span class="badge badge-active">${w.rank}</span> ${isAdminLoggedIn ? `<button class="action-btn btn-delete" onclick="deleteWeapon(${w.id})">🗑️</button>` : ''}</td>
+                    <td><span class="badge badge-active">${w.rank}</span></td>
                 </tr>
             `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد أسلحة مسجلة بالقائمة.</td></tr>`;
 
-            // عرض المركبات العامة
+            // 2. عرض المركبات العامة
             document.getElementById('publicVehiclesTable').innerHTML = vehiclesList.map(v => `
                 <tr>
                     <td><strong>${v.name}</strong></td>
-                    <td><span class="badge badge-leave">${v.dept}</span> ${isAdminLoggedIn ? `<button class="action-btn btn-delete" onclick="deleteVehicle(${v.id})">🗑️</button>` : ''}</td>
+                    <td><span class="badge badge-leave">${v.dept}</span></td>
                 </tr>
             `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد مركبات مسجلة بالقائمة.</td></tr>`;
+
+            // 3. عرض الأسلحة داخل لوحة القيادة (للحذف)
+            document.getElementById('adminWeaponsTable').innerHTML = weaponsList.map(w => `
+                <tr>
+                    <td><strong>${w.name}</strong></td>
+                    <td><small>${w.rank}</small></td>
+                    <td><button class="action-btn btn-delete" title="حذف السلاح" onclick="deleteWeapon(${w.id})">🗑️</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
+
+            // 4. عرض المركبات داخل لوحة القيادة (للحذف)
+            document.getElementById('adminVehiclesTable').innerHTML = vehiclesList.map(v => `
+                <tr>
+                    <td><strong>${v.name}</strong></td>
+                    <td><small>${v.dept}</small></td>
+                    <td><button class="action-btn btn-delete" title="حذف المركبة" onclick="deleteVehicle(${v.id})">🗑️</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
             // جدول القائمة العامة
             const publicOfficersTbody = document.getElementById('publicOfficersTable');
