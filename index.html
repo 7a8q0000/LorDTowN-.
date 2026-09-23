@@ -430,6 +430,57 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
+
+        /* كروت قيادات الدولة */
+        .leaders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .leader-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        .leader-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        .leader-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: rgba(255,123,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 30px;
+        }
+        .leader-title {
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .leader-name {
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .leader-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
@@ -473,6 +524,7 @@
 
         <div class="nav-links">
             <button class="active" onclick="openTab(event, 'home')">الرئيسية</button>
+            <button onclick="openTab(event, 'stateLeaders')">👑 قيادات الدولة</button>
             <button onclick="openTab(event, 'profile')">ملف الضابط</button>
             <button onclick="openTab(event, 'equipment')">الأسلحة والمركبات</button>
             <button onclick="openTab(event, 'roster')">جدول التوزيع</button>
@@ -516,7 +568,15 @@
             </div>
         </div>
 
-        <!-- 2. ملف الضابط -->
+        <!-- 2. قيادات الدولة (الجديدة) -->
+        <div id="stateLeaders" class="tab-content">
+            <h2 class="section-title">🏛️ قيادات دولة LordTown العليا</h2>
+            <div class="leaders-grid" id="publicLeadersGrid">
+                <!-- يتم التعبئة تلقائياً من JS -->
+            </div>
+        </div>
+
+        <!-- 3. ملف الضابط -->
         <div id="profile" class="tab-content">
             <h2 class="section-title">🪪 ملف الضابط الشخصي</h2>
             <div class="card" style="max-width: 500px; margin: 0 auto;">
@@ -539,12 +599,11 @@
             </div>
         </div>
 
-        <!-- 3. الأسلحة والمركبات المصرحة (قائمة عامة) -->
+        <!-- 4. الأسلحة والمركبات المصرحة (قائمة عامة) -->
         <div id="equipment" class="tab-content">
             <h2 class="section-title">🛡️ قائمة الأسلحة والمركبات المعتمدة رسمياً</h2>
             
             <div class="equipment-grid">
-                <!-- قائمة الأسلحة -->
                 <div class="card">
                     <h3 class="card-title">🔫 الأسلحة المصرحة لقطاع الشرطة</h3>
                     <div class="table-container">
@@ -560,7 +619,6 @@
                     </div>
                 </div>
 
-                <!-- قائمة المركبات -->
                 <div class="card">
                     <h3 class="card-title">🚔 المركبات الميدانية المصرحة</h3>
                     <div class="table-container">
@@ -578,7 +636,7 @@
             </div>
         </div>
 
-        <!-- 4. جدول التوزيع -->
+        <!-- 5. جدول التوزيع -->
         <div id="roster" class="tab-content">
             <h2 class="section-title">🗺️ جدول توزيع الدوريات والقطاعات</h2>
             <div class="table-container">
@@ -609,7 +667,7 @@
             </div>
         </div>
 
-        <!-- 5. تقديم الإجازات -->
+        <!-- 6. تقديم الإجازات -->
         <div id="requests" class="tab-content">
             <h2 class="section-title">📝 تقديم طلب إجازة رسمية</h2>
             <div class="admin-grid">
@@ -644,7 +702,7 @@
             </div>
         </div>
 
-        <!-- 6. القائمة العسكرية العامة -->
+        <!-- 7. القائمة العسكرية العامة -->
         <div id="soldiers" class="tab-content">
             <h2 class="section-title">🎖️ القائمة العامة للعساكر والباجات</h2>
 
@@ -664,11 +722,41 @@
             </div>
         </div>
 
-        <!-- 7. لوحة القيادات والمسؤولين -->
+        <!-- 8. لوحة القيادات والمسؤولين -->
         <div id="admin" class="tab-content">
             <h2 class="section-title">🛡️ لوحة القيادة والسيطرة</h2>
 
             <div class="admin-grid">
+
+                <!-- إضافة قيادي جديد للدولة -->
+                <div class="card">
+                    <h3 class="card-title">👑 إدارة قائمة قيادات الدولة</h3>
+                    <div class="form-group">
+                        <input type="text" id="newLeaderName" class="form-control" placeholder="اسم القائد (مثال: LordTown)">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="newLeaderTitle" class="form-control" placeholder="المنصب (مثال: حاكم الدولة / مدير الأمن العام)">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="newLeaderDesc" class="form-control" rows="2" placeholder="نبذة / تعريف مختصر عن القائد..."></textarea>
+                    </div>
+                    <button class="btn-add" style="background:#f59e0b; color:#000;" onclick="addLeader()">إضافة للقائمة الرسمية</button>
+                    
+                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 القيادات الحالية:</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>المنصب</th>
+                                    <th>حذف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminLeadersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- إضافة عسكري -->
                 <div class="card">
                     <h3 class="card-title">🎖️ إضافة / تعديل بيانات عسكري</h3>
@@ -707,16 +795,16 @@
 
                 <!-- إدارة الأسلحة في لوحة القيادة -->
                 <div class="card">
-                    <h3 class="card-title">🔫 إدارة الأسلحة المصرحة عامةً</h3>
+                    <h3 class="card-title">🔫 إدارة الأسلحة المصرحة</h3>
                     <div class="form-group">
                         <input type="text" id="newWeaponName" class="form-control" placeholder="اسم السلاح (مثال: Combat Pistol)">
                     </div>
                     <div class="form-group">
                         <input type="text" id="newWeaponRank" class="form-control" placeholder="الصلاحية (مثال: جميع الرتب / SWAT)">
                     </div>
-                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addWeapon()">إضافة سلاح جديد للقائمة</button>
+                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addWeapon()">إضافة سلاح جديد</button>
                     
-                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 قائمة الأسلحة الحالية (للحذف):</h4>
+                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 الأسلحة الحالية:</h4>
                     <div class="table-container">
                         <table>
                             <thead>
@@ -733,16 +821,16 @@
 
                 <!-- إدارة المركبات في لوحة القيادة -->
                 <div class="card">
-                    <h3 class="card-title">🚔 إدارة المركبات المصرحة عامةً</h3>
+                    <h3 class="card-title">🚔 إدارة المركبات المصرحة</h3>
                     <div class="form-group">
                         <input type="text" id="newVehicleName" class="form-control" placeholder="اسم المركبة (مثال: Vapid Cruiser)">
                     </div>
                     <div class="form-group">
-                        <input type="text" id="newVehicleDept" class="form-control" placeholder="القطاع / الاستخدام (مثال: دورية عامة / مطاردات)">
+                        <input type="text" id="newVehicleDept" class="form-control" placeholder="القطاع (مثال: دورية عامة)">
                     </div>
-                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addVehicle()">إضافة مركبة جديدة للقائمة</button>
+                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addVehicle()">إضافة مركبة جديدة</button>
                     
-                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 قائمة المركبات الحالية (للحذف):</h4>
+                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 المركبات الحالية:</h4>
                     <div class="table-container">
                         <table>
                             <thead>
@@ -759,12 +847,12 @@
 
                 <!-- طلبات الإجازات المعلقة -->
                 <div class="card">
-                    <h3 class="card-title">📬 إدارة واستجابة طلبات الإجازات</h3>
+                    <h3 class="card-title">📬 إدارة طلبات الإجازات</h3>
                     <div class="table-container">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>العسكري وسبب الإجازة</th>
+                                    <th>العسكري والسبب</th>
                                     <th>إجراء القيادة</th>
                                 </tr>
                             </thead>
@@ -772,12 +860,13 @@
                         </table>
                     </div>
                 </div>
+
             </div>
 
             <!-- إدارة الكادر العسكري -->
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
-                    <h3 class="card-title" style="margin:0;">👥 سجل العساكر والتحكم في الحالة الميدانية</h3>
+                    <h3 class="card-title" style="margin:0;">👥 سجل العساكر والتحكم بالحالة</h3>
                     <input type="text" id="searchInput" class="form-control" style="width: 200px;" placeholder="بحث برقم الباج أو الاسم..." onkeyup="filterOfficers()">
                 </div>
                 <div class="table-container">
@@ -788,7 +877,7 @@
                                 <th>الاسم بالسيرفر</th>
                                 <th>الرتبة</th>
                                 <th>الوحدة</th>
-                                <th>الحالة الحالية</th>
+                                <th>الحالة</th>
                                 <th>التحكم</th>
                             </tr>
                         </thead>
@@ -842,7 +931,7 @@
                 isAdminLoggedIn = true;
                 document.getElementById('authOverlay').style.display = 'none';
                 openTab(null, 'admin');
-                document.querySelectorAll('.nav-links button')[6].classList.add('active');
+                document.querySelectorAll('.nav-links button')[7].classList.add('active');
             } else {
                 alert('⚠️ الرمز السري غير صحيح!');
                 document.getElementById('adminPasswordInput').value = '';
@@ -878,6 +967,11 @@
         let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [];
         let requests = JSON.parse(localStorage.getItem('lspd_requests')) || [];
         
+        let leadersList = JSON.parse(localStorage.getItem('lspd_leaders')) || [
+            { id: 1, name: "LordTown", title: "حاكم الدولة", desc: "المسؤول الأعلى عن إدارة شؤون الدولة وسيادتها." },
+            { id: 2, name: "Sultan", title: "مدير الأمن العام", desc: "المشرف العام على قطاع الشرطة LSPD والعمليات الميدانية." }
+        ];
+
         let weaponsList = JSON.parse(localStorage.getItem('lspd_weapons')) || [
             { id: 1, name: "Taser Stun Gun", rank: "جميع الرتب" },
             { id: 2, name: "Combat Pistol", rank: "جندي فما فوق" },
@@ -895,7 +989,27 @@
             localStorage.setItem('lspd_requests', JSON.stringify(requests));
             localStorage.setItem('lspd_weapons', JSON.stringify(weaponsList));
             localStorage.setItem('lspd_vehicles', JSON.stringify(vehiclesList));
+            localStorage.setItem('lspd_leaders', JSON.stringify(leadersList));
             renderAll();
+        }
+
+        function addLeader() {
+            const name = document.getElementById('newLeaderName').value.trim();
+            const title = document.getElementById('newLeaderTitle').value.trim();
+            const desc = document.getElementById('newLeaderDesc').value.trim();
+
+            if (!name || !title) return alert("يرجى إدخال اسم القيادي ومنصبه!");
+
+            leadersList.push({ id: Date.now(), name: name, title: title, desc: desc || "لا يوجد تعريف إضافي." });
+            saveData();
+            document.getElementById('newLeaderName').value = '';
+            document.getElementById('newLeaderTitle').value = '';
+            document.getElementById('newLeaderDesc').value = '';
+        }
+
+        function deleteLeader(id) {
+            leadersList = leadersList.filter(l => l.id !== id);
+            saveData();
         }
 
         function addOfficerByAdmin() {
@@ -1031,41 +1145,60 @@
             document.getElementById('homeLeaveOfficers').textContent = officers.filter(o => o.status === 'leave').length;
             document.getElementById('homeTotalRequests').textContent = requests.filter(r => r.status === 'pending').length;
 
-            // 1. عرض الأسلحة العامة
+            // 1. عرض قيادات الدولة (الصفحة العامة)
+            document.getElementById('publicLeadersGrid').innerHTML = leadersList.map(l => `
+                <div class="leader-card">
+                    <div class="leader-avatar">👑</div>
+                    <div class="leader-title">${l.title}</div>
+                    <div class="leader-name">${l.name}</div>
+                    <div class="leader-desc">${l.desc}</div>
+                </div>
+            `).join('') || `<p style="text-align:center; grid-column: 1/-1; color: var(--text-muted);">لا توجد قيادات مسجلة حالياً.</p>`;
+
+            // 2. عرض قيادات الدولة داخل لوحة المسؤولين (للحذف)
+            document.getElementById('adminLeadersTable').innerHTML = leadersList.map(l => `
+                <tr>
+                    <td><strong>${l.name}</strong></td>
+                    <td><small>${l.title}</small></td>
+                    <td><button class="action-btn btn-delete" title="حذف القائد" onclick="deleteLeader(${l.id})">🗑️</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
+
+            // 3. عرض الأسلحة العامة
             document.getElementById('publicWeaponsTable').innerHTML = weaponsList.map(w => `
                 <tr>
                     <td><strong>${w.name}</strong></td>
                     <td><span class="badge badge-active">${w.rank}</span></td>
                 </tr>
-            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد أسلحة مسجلة بالقائمة.</td></tr>`;
+            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد أسلحة مسجلة.</td></tr>`;
 
-            // 2. عرض المركبات العامة
+            // 4. عرض المركبات العامة
             document.getElementById('publicVehiclesTable').innerHTML = vehiclesList.map(v => `
                 <tr>
                     <td><strong>${v.name}</strong></td>
                     <td><span class="badge badge-leave">${v.dept}</span></td>
                 </tr>
-            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد مركبات مسجلة بالقائمة.</td></tr>`;
+            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد مركبات مسجلة.</td></tr>`;
 
-            // 3. عرض الأسلحة داخل لوحة القيادة (للحذف)
+            // 5. عرض الأسلحة داخل لوحة القيادة
             document.getElementById('adminWeaponsTable').innerHTML = weaponsList.map(w => `
                 <tr>
                     <td><strong>${w.name}</strong></td>
                     <td><small>${w.rank}</small></td>
-                    <td><button class="action-btn btn-delete" title="حذف السلاح" onclick="deleteWeapon(${w.id})">🗑️</button></td>
+                    <td><button class="action-btn btn-delete" onclick="deleteWeapon(${w.id})">🗑️</button></td>
                 </tr>
             `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
-            // 4. عرض المركبات داخل لوحة القيادة (للحذف)
+            // 6. عرض المركبات داخل لوحة القيادة
             document.getElementById('adminVehiclesTable').innerHTML = vehiclesList.map(v => `
                 <tr>
                     <td><strong>${v.name}</strong></td>
                     <td><small>${v.dept}</small></td>
-                    <td><button class="action-btn btn-delete" title="حذف المركبة" onclick="deleteVehicle(${v.id})">🗑️</button></td>
+                    <td><button class="action-btn btn-delete" onclick="deleteVehicle(${v.id})">🗑️</button></td>
                 </tr>
             `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
-            // جدول القائمة العامة
+            // 7. جدول القائمة العامة
             const publicOfficersTbody = document.getElementById('publicOfficersTable');
             publicOfficersTbody.innerHTML = officers.map(o => `
                 <tr>
@@ -1081,7 +1214,7 @@
                 </tr>
             `).join('') || `<tr><td colspan="5" style="text-align:center;">لم يتم تسجيل أي عسكري بعد من قبل القيادة.</td></tr>`;
 
-            // جدول الإدارة للقيادات
+            // 8. جدول الإدارة للقيادات
             const adminOfficersTbody = document.getElementById('adminOfficersTable');
             adminOfficersTbody.innerHTML = officers.map(o => `
                 <tr>
@@ -1095,13 +1228,13 @@
                         </span>
                     </td>
                     <td>
-                        <button class="action-btn btn-status" title="تغيير الحالة الميدانية" onclick="toggleStatus(${o.id})">🔄</button>
+                        <button class="action-btn btn-status" title="تغيير الحالة" onclick="toggleStatus(${o.id})">🔄</button>
                         <button class="action-btn btn-delete" title="حذف" onclick="deleteOfficer(${o.id})">🗑️</button>
                     </td>
                 </tr>
             `).join('') || `<tr><td colspan="6" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
-            // طلبات الإجازة العامة
+            // 9. طلبات الإجازة العامة
             const publicReqTbody = document.getElementById('publicRequestsTable');
             publicReqTbody.innerHTML = requests.map(r => `
                 <tr>
@@ -1115,19 +1248,18 @@
                 </tr>
             `).join('') || `<tr><td colspan="3" style="text-align:center;">لا توجد طلبات إجازة مسجلة.</td></tr>`;
 
-            // طلبات الإجازة للقيادة
+            // 10. طلبات الإجازة للقيادة
             const adminReqTbody = document.getElementById('adminRequestsTable');
             adminReqTbody.innerHTML = requests.filter(r => r.status === 'pending').map(r => `
                 <tr>
                     <td><strong>${r.name}</strong><br><small style="color:var(--text-muted);">${r.reason}</small></td>
                     <td>
-                        <button class="action-btn btn-status" onclick="handleRequest(${r.id}, 'approved')">✅ قبول وتوثيق الإجازة</button>
+                        <button class="action-btn btn-status" onclick="handleRequest(${r.id}, 'approved')">✅ قبول</button>
                         <button class="action-btn btn-delete" onclick="handleRequest(${r.id}, 'rejected')">❌ رفض</button>
                     </td>
                 </tr>
-            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد طلبات معلقة بانتظار الاعتماد.</td></tr>`;
+            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد طلبات معلقة.</td></tr>`;
 
-            // تحديث بيانات ملف العسكري إن كان مسجلاً بالقيادة
             if (currentUserData) {
                 const foundOfficer = officers.find(o => o.name.toLowerCase() === currentUserData.displayName.toLowerCase());
                 if (foundOfficer) {
