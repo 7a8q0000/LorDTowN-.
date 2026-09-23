@@ -34,41 +34,6 @@
             padding-bottom: 80px;
         }
 
-        /* --- شريط التنبيهات المباشرة --- */
-        .live-ticker {
-            background: rgba(239, 68, 68, 0.15);
-            border-bottom: 1px solid var(--danger);
-            color: #fff;
-            padding: 8px 15px;
-            font-size: 13px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .ticker-title {
-            background: var(--danger);
-            color: #fff;
-            padding: 2px 10px;
-            border-radius: 4px;
-            margin-left: 15px;
-            font-size: 11px;
-            letter-spacing: 1px;
-            flex-shrink: 0;
-        }
-
-        .ticker-text {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
         .header {
             position: sticky;
             top: 0;
@@ -102,7 +67,7 @@
             box-shadow: 0 0 10px var(--primary-glow);
         }
 
-        /* بروفايل ديسكورد العلوي */
+        /* بروفايل ديسكورد */
         .user-header-profile {
             display: flex;
             align-items: center;
@@ -508,12 +473,6 @@
 </head>
 <body>
 
-    <!-- شريط التنبيهات المباشرة -->
-    <div class="live-ticker">
-        <span class="ticker-title">تنبيه عاجل</span>
-        <div class="ticker-text" id="liveAlertText">🚨 حالة الاستنفار: كود أصفر (تأهب متوسط) | يرجى الالتزام بالدوريات والتعامل الفوري مع بلاغات 10-1.</div>
-    </div>
-
     <audio id="bgMusic" loop src="music.mp3"></audio>
 
     <button class="audio-btn" id="audioToggle" onclick="toggleAudio()">
@@ -541,14 +500,14 @@
                 دولة LordTown | LSPD
             </div>
             
-            <!-- بروفايل العضو المسجل من ديسكورد -->
+            <!-- بروفايل ديسكورد -->
             <div id="userHeaderBox" class="user-header-profile" style="display: none;">
                 <span id="logoutBtn" class="logout-link" onclick="logoutDiscord()">خروج</span>
                 <span id="headerUserName" class="user-header-name">زائر</span>
                 <img id="headerAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
             </div>
 
-            <!-- زر تسجيل الدخول إذا لم يتسجل بعد -->
+            <!-- زر تسجيل الدخول -->
             <button id="mainDiscordLoginBtn" class="btn-discord-login" onclick="loginWithDiscord()">
                 دخول Discord
             </button>
@@ -559,7 +518,7 @@
             <button onclick="openTab(event, 'profile')">ملف الضابط</button>
             <button onclick="openTab(event, 'leaders')">القادات</button>
             <button onclick="openTab(event, 'roster')">جدول التوزيع</button>
-            <button onclick="openTab(event, 'requests')">الإجازات والترقيات</button>
+            <button onclick="openTab(event, 'requests')">تقديم الإجازات</button>
             <button onclick="openTab(event, 'protocols')">البروتوكولات</button>
             <button onclick="openTab(event, 'soldiers')">العساكر</button>
             <button onclick="requestAdminAccess(event)">⚡ لوحة المسؤولين</button>
@@ -591,7 +550,7 @@
                 </div>
                 <div class="stat-box">
                     <div class="number" id="homeTotalRequests">0</div>
-                    <div class="label">طلبات قيد الإجراء</div>
+                    <div class="label">طلبات الإجازة قيد النظر</div>
                 </div>
                 <div class="stat-box">
                     <div class="number">24/7</div>
@@ -600,22 +559,24 @@
             </div>
         </div>
 
-        <!-- 2. ملف الضابط (التسجيل التلقائي من ديسكورد) -->
+        <!-- 2. ملف الضابط -->
         <div id="profile" class="tab-content">
             <h2 class="section-title">🪪 بيانات الضابط التلقائية</h2>
             <div class="card" style="max-width: 500px; margin: 0 auto;">
                 <div class="form-group">
                     <label>الاسم في سيرفر الشرطة:</label>
-                    <input type="text" id="policeName" class="form-control" readonly placeholder="يتم التعبئة تلقائياً..." style="color: var(--primary); font-weight: bold;">
+                    <input type="text" id="policeName" class="form-control" readonly placeholder="يرجى تسجيل الدخول من Discord..." style="color: var(--primary); font-weight: bold;">
                 </div>
                 <div class="form-group">
                     <label>الرتبة العسكرية:</label>
-                    <input type="text" id="rankName" class="form-control" readonly placeholder="يتم التعبئة تلقائياً..." style="color: var(--primary); font-weight: bold;">
+                    <input type="text" id="rankName" class="form-control" readonly placeholder="يتم الجلب تلقائياً..." style="color: var(--primary); font-weight: bold;">
                 </div>
                 <div class="form-group">
                     <label>رقم / مستوى الرتبة:</label>
-                    <input type="text" id="rankLevel" class="form-control" readonly placeholder="يتم التعبئة تلقائياً..." style="color: var(--primary); font-weight: bold;">
+                    <input type="text" id="rankLevel" class="form-control" readonly placeholder="يتم الجلب تلقائياً..." style="color: var(--primary); font-weight: bold;">
                 </div>
+
+                <button class="btn-add" style="margin-top: 15px; background: #10b981; color: #fff;" onclick="joinMilitaryList()">🎖️ الانضمام للقائمة العسكرية تلقائياً</button>
             </div>
         </div>
 
@@ -642,7 +603,7 @@
             </div>
         </div>
 
-        <!-- 4. جدول التوزيع الميداني (Shift Roster) -->
+        <!-- 4. جدول التوزيع الميداني -->
         <div id="roster" class="tab-content">
             <h2 class="section-title">🗺️ جدول توزيع الدوريات والقطاعات</h2>
             <div class="table-container">
@@ -679,38 +640,31 @@
             </div>
         </div>
 
-        <!-- 5. نظام تقديم الإجازات والترقيات -->
+        <!-- 5. نظام تقديم الإجازات -->
         <div id="requests" class="tab-content">
-            <h2 class="section-title">📝 تقديم طلب ترقية / إجازة</h2>
+            <h2 class="section-title">📝 تقديم طلب إجازة رسمية</h2>
             <div class="admin-grid">
                 <div class="card">
-                    <h3 class="card-title">طلب جديد</h3>
+                    <h3 class="card-title">تقديم إجازة جديدة</h3>
                     <div class="form-group">
-                        <label>نوع الطلب:</label>
-                        <select id="reqType" class="form-control">
-                            <option value="طلب إجازة">طلب إجازة رسمية</option>
-                            <option value="طلب ترقية">طلب رفع ملف ترقية</option>
-                        </select>
+                        <label>اسم العسكري (تلقائي عند تسجيل الدخول):</label>
+                        <input type="text" id="reqName" class="form-control" placeholder="ادخل اسمك والرقم العسكري...">
                     </div>
                     <div class="form-group">
-                        <label>الاسم الكامل ورقم Badge:</label>
-                        <input type="text" id="reqName" class="form-control" placeholder="مثال: خالد العتيبي (S-50)">
+                        <label>أسباب ومُدة الإجازة المطلوبة:</label>
+                        <textarea id="reqReason" class="form-control" rows="4" placeholder="اكتب مبررات الطلب وعدد الأيام المطلوبة..."></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>تفاصيل / أسباب الطلب:</label>
-                        <textarea id="reqReason" class="form-control" rows="3" placeholder="اكتب تفاصيل طلبك والمبررات..."></textarea>
-                    </div>
-                    <button class="btn-add" onclick="submitRequest()">إرسال الطلب للقيادة</button>
+                    <button class="btn-add" onclick="submitRequest()">إرسال طلب الإجازة للقيادة</button>
                 </div>
 
                 <div class="card">
-                    <h3 class="card-title">📋 حالة الطلبات العامة</h3>
+                    <h3 class="card-title">📋 سجل طلبات الإجازة العامة</h3>
                     <div class="table-container">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>الاسم</th>
-                                    <th>النوع</th>
+                                    <th>اسم العسكري</th>
+                                    <th>سبب الإجازة</th>
                                     <th>الحالة</th>
                                 </tr>
                             </thead>
@@ -744,7 +698,11 @@
 
         <!-- 7. العساكر -->
         <div id="soldiers" class="tab-content">
-            <h2 class="section-title">القائمة العامة للعساكر</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h2 class="section-title" style="margin: 0;">القائمة العامة للعساكر</h2>
+                <button class="btn-add" style="width: auto; padding: 8px 16px; background: #10b981; color: #fff;" onclick="joinMilitaryList()">🎖️ الانضمام للقائمة العسكرية</button>
+            </div>
+
             <div class="table-container">
                 <table>
                     <thead>
@@ -765,18 +723,10 @@
         <div id="admin" class="tab-content">
             <h2 class="section-title">🛡️ لوحة التحكم والإدارة</h2>
 
-            <div class="card" style="margin-bottom: 20px;">
-                <h3 class="card-title">📢 تحديث شريط التنبيهات المباشرة</h3>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="newAlertInput" class="form-control" placeholder="اكتب التنبيه الجديد هنا...">
-                    <button class="btn-add" style="width: 140px;" onclick="updateLiveAlert()">تحديث الآن</button>
-                </div>
-            </div>
-            
             <div class="admin-grid">
-                <!-- إضافة عسكري -->
+                <!-- إضافة عسكري يدوياً -->
                 <div class="card">
-                    <h3 class="card-title">🎖️ إضافة عسكري جديد للنظام</h3>
+                    <h3 class="card-title">🎖️ إضافة عسكري جديد يدويًا</h3>
                     <div class="form-group">
                         <label>اسم العسكري:</label>
                         <input type="text" id="officerName" class="form-control" placeholder="مثال: خالد عبدالسلام">
@@ -810,15 +760,14 @@
                     <button class="btn-add" onclick="addOfficer()">تسجيل العسكري</button>
                 </div>
 
-                <!-- قائمة إدارة الطلبات للمسؤول -->
+                <!-- قائمة إدارة الإجازات للمسؤول -->
                 <div class="card">
-                    <h3 class="card-title">📬 إدارة طلبات الترقيات والإجازات</h3>
+                    <h3 class="card-title">📬 إدارة طلبات الإجازات</h3>
                     <div class="table-container">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>العسكري</th>
-                                    <th>النوع</th>
+                                    <th>العسكري والسبب</th>
                                     <th>القرار</th>
                                 </tr>
                             </thead>
@@ -855,6 +804,7 @@
         const API_BASE = "https://03gqislej5.apps.bot-hosting.cloud";
         const ADMIN_PASSWORD = "LSPD1234";
         let isAdminLoggedIn = false;
+        let currentUserData = null;
 
         // دالة الدخول عبر ديسكورد
         function loginWithDiscord() {
@@ -940,6 +890,37 @@
             renderAll();
         }
 
+        // انضمام العسكري تلقائياً ببيانات ديسكورد
+        function joinMilitaryList() {
+            if (!currentUserData) {
+                alert('⚠️ يجب عليك تسجيل الدخول عبر Discord أولاً لكي يتم إضافة اسمك تلقائياً!');
+                return;
+            }
+
+            const name = currentUserData.displayName;
+            const rank = currentUserData.rankName || 'جندي';
+            const badge = currentUserData.rankLevel || 'S-' + Math.floor(Math.random() * 89 + 10);
+
+            // التحقق إذا كان مسجلاً سابقاً
+            const existing = officers.find(o => o.name === name);
+            if (existing) {
+                alert('⚠️ أنت مسجل بالفعل في القائمة العسكرية!');
+                return;
+            }
+
+            officers.push({
+                id: Date.now(),
+                badge: badge,
+                name: name,
+                rank: rank,
+                dept: "دورية عامة",
+                status: "active"
+            });
+
+            saveData();
+            alert(`✅ تم إضافتك بنجاح للقائمة العسكرية باسم: (${name})`);
+        }
+
         function addOfficer() {
             const name = document.getElementById('officerName').value.trim();
             const badge = document.getElementById('badgeNumber').value.trim();
@@ -955,7 +936,7 @@
         }
 
         function deleteOfficer(id) {
-            if (confirm("حذف العسكري؟")) {
+            if (confirm("هل أنت تأكد من حذف العسكري؟")) {
                 officers = officers.filter(o => o.id !== id);
                 saveData();
             }
@@ -971,33 +952,38 @@
             }
         }
 
-        function updateLiveAlert() {
-            const txt = document.getElementById('newAlertInput').value.trim();
-            if (txt) {
-                document.getElementById('liveAlertText').textContent = txt;
-                document.getElementById('newAlertInput').value = '';
-                alert("تم تحديث الشريط المباشر بنجاح!");
-            }
-        }
-
+        // تقديم طلب الإجازة
         function submitRequest() {
             const name = document.getElementById('reqName').value.trim();
-            const type = document.getElementById('reqType').value;
             const reason = document.getElementById('reqReason').value.trim();
 
-            if (!name || !reason) return alert("الرجاء تعبئة كامل الحقول!");
+            if (!name || !reason) return alert("الرجاء تعبئة الاسم وسبب/مدة الإجازة!");
 
-            requests.push({ id: Date.now(), name, type, reason, status: 'pending' });
+            requests.push({ id: Date.now(), name, reason, status: 'pending' });
             saveData();
-            document.getElementById('reqName').value = '';
             document.getElementById('reqReason').value = '';
-            alert("تم إرسال الطلب بنجاح وهو قيد المراجعة.");
+            alert("تم إرسال طلب الإجازة للقيادة بنجاح وهو قيد المراجعة.");
         }
 
+        // قبول أو رفض طلب الإجازة
         function handleRequest(id, newStatus) {
             const req = requests.find(r => r.id === id);
             if (req) {
                 req.status = newStatus;
+
+                // إذا تم قبول الإجازة -> يتحول العسكري تلقائياً إلى "في إجازة"
+                if (newStatus === 'approved') {
+                    const officer = officers.find(o => 
+                        o.name.trim() === req.name.trim() || 
+                        req.name.includes(o.name) || 
+                        o.name.includes(req.name)
+                    );
+
+                    if (officer) {
+                        officer.status = 'leave';
+                    }
+                }
+
                 saveData();
             }
         }
@@ -1043,10 +1029,10 @@
             publicReqTbody.innerHTML = requests.map(r => `
                 <tr>
                     <td>${r.name}</td>
-                    <td>${r.type}</td>
+                    <td>${r.reason}</td>
                     <td>
-                        <span class="badge ${r.status === 'approved' ? 'badge-active' : r.status === 'rejected' ? 'badge-suspended' : 'badge-leave'}">
-                            ${r.status === 'approved' ? 'مقبول' : r.status === 'rejected' ? 'مرفوض' : 'قيد النظر'}
+                        <span class="badge ${r.status === 'approved' ? 'badge-leave' : r.status === 'rejected' ? 'badge-suspended' : 'badge-active'}">
+                            ${r.status === 'approved' ? 'مقبولة (في إجازة)' : r.status === 'rejected' ? 'مرفوضة' : 'قيد النظر'}
                         </span>
                     </td>
                 </tr>
@@ -1056,13 +1042,12 @@
             adminReqTbody.innerHTML = requests.filter(r => r.status === 'pending').map(r => `
                 <tr>
                     <td><strong>${r.name}</strong><br><small style="color:var(--text-muted);">${r.reason}</small></td>
-                    <td>${r.type}</td>
                     <td>
-                        <button class="action-btn btn-status" onclick="handleRequest(${r.id}, 'approved')">✅ قبول</button>
+                        <button class="action-btn btn-status" onclick="handleRequest(${r.id}, 'approved')">✅ قبول الإجازة</button>
                         <button class="action-btn btn-delete" onclick="handleRequest(${r.id}, 'rejected')">❌ رفض</button>
                     </td>
                 </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">لا توجد طلبات جديدة.</td></tr>`;
+            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد طلبات جديدة.</td></tr>`;
         }
 
         function filterOfficers() {
@@ -1073,7 +1058,7 @@
             });
         }
 
-        // استلام وتعبئة بيانات ديسكورد التلقائية عند العودة من الربط
+        // استلام وتعبئة البيانات عند العودة من الربط
         window.addEventListener('DOMContentLoaded', () => {
             renderAll();
 
@@ -1082,21 +1067,26 @@
 
             if (userParam) {
                 try {
-                    const userData = JSON.parse(decodeURIComponent(userParam));
+                    currentUserData = JSON.parse(decodeURIComponent(userParam));
 
-                    // استخراج الاسم الصحيح لتفادي undefined
-                    const displayName = userData.serverName || userData.nickname || userData.username || 'ضابط';
+                    const displayName = currentUserData.serverName || currentUserData.nickname || currentUserData.username || 'ضابط';
+                    currentUserData.displayName = displayName;
 
                     // تحديث الهيدر العلوي
                     document.getElementById('headerUserName').textContent = displayName;
-                    document.getElementById('headerAvatar').src = userData.avatar;
+                    document.getElementById('headerAvatar').src = currentUserData.avatar;
                     document.getElementById('userHeaderBox').style.display = 'flex';
                     document.getElementById('mainDiscordLoginBtn').style.display = 'none';
 
                     // تعبئة خانات البروفايل التلقائية
                     document.getElementById('policeName').value = displayName;
-                    document.getElementById('rankName').value = userData.rankName || 'بدون رتبة';
-                    document.getElementById('rankLevel').value = userData.rankLevel || '0';
+                    document.getElementById('rankName').value = currentUserData.rankName || 'جندي';
+                    document.getElementById('rankLevel').value = currentUserData.rankLevel || 'S-0';
+
+                    // تعبئة الاسم تلقائياً في خانة طلب الإجازة
+                    if (document.getElementById('reqName')) {
+                        document.getElementById('reqName').value = displayName;
+                    }
 
                 } catch (err) {
                     console.error("خطأ قراءة بيانات ديسكورد:", err);
