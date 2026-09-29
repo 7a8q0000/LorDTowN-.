@@ -431,7 +431,6 @@
             gap: 20px;
         }
 
-        /* كروت قيادات الدولة */
         .leaders-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -481,6 +480,128 @@
             color: var(--text-muted);
             line-height: 1.6;
         }
+
+        .rules-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--primary);
+        }
+        .rules-card h3 {
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .rules-card ul {
+            padding-right: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* تصميم كرت التحضير بالبصمة */
+        .fingerprint-box {
+            text-align: center;
+            padding: 30px;
+            background: var(--bg-card);
+            border: 2px dashed var(--primary);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .fingerprint-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 123, 0, 0.1);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .fingerprint-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+            color: #000;
+        }
+        .points-badge {
+            background: linear-gradient(135deg, #ff7b00, #ffae00);
+            color: #000;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        /* تصميم قائمة المطلوبين */
+        .wanted-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .wanted-card {
+            background: var(--bg-card);
+            border: 2px solid var(--danger);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .wanted-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+        }
+        .wanted-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--danger);
+        }
+        .wanted-header {
+            background: var(--danger);
+            color: #fff;
+            text-align: center;
+            font-weight: 900;
+            font-size: 16px;
+            padding: 6px;
+            letter-spacing: 2px;
+        }
+        .wanted-body {
+            padding: 15px;
+        }
+        .wanted-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .wanted-info {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .wanted-danger-level {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--warning);
+        }
     </style>
 </head>
 <body>
@@ -524,10 +645,14 @@
 
         <div class="nav-links">
             <button class="active" onclick="openTab(event, 'home')">الرئيسية</button>
+            <button onclick="openTab(event, 'wanted')">⚠️ قائمة المطلوبين</button>
+            <button onclick="openTab(event, 'attendance')">👈 جهاز التحضير (البصمة)</button>
             <button onclick="openTab(event, 'stateLeaders')">قيادات الدولة</button>
             <button onclick="openTab(event, 'profile')">ملف الضابط</button>
             <button onclick="openTab(event, 'equipment')">الأسلحة والمركبات</button>
             <button onclick="openTab(event, 'roster')">جدول التوزيع</button>
+            <button onclick="openTab(event, 'reports')">🚨 البلاغات والمخالفات</button>
+            <button onclick="openTab(event, 'rules')">📜 القوانين والتعليمات</button>
             <button onclick="openTab(event, 'requests')">تقديم الإجازات</button>
             <button onclick="openTab(event, 'soldiers')">القائمة العسكرية</button>
             <button onclick="requestAdminAccess(event)">⚡ لوحة القيادات</button>
@@ -558,6 +683,10 @@
                     <div class="label">على رأس العمل</div>
                 </div>
                 <div class="stat-box">
+                    <div class="number" style="color: var(--danger);" id="homeTotalWanted">0</div>
+                    <div class="label">المطلوبين أمنياً</div>
+                </div>
+                <div class="stat-box">
                     <div class="number" style="color: var(--warning);" id="homeLeaveOfficers">0</div>
                     <div class="label">في إجازة رسمية</div>
                 </div>
@@ -568,21 +697,57 @@
             </div>
         </div>
 
-        <!-- 2. قيادات الدولة -->
-        <div id="stateLeaders" class="tab-content">
-            <h2 class="section-title">قيادات دولة Lord Town العليا</h2>
-            <div class="leaders-grid" id="publicLeadersGrid">
-                <!-- يتم التعبئة تلقائياً من JS -->
+        <!-- 2. قائمة المطلوبين -->
+        <div id="wanted" class="tab-content">
+            <h2 class="section-title">⚠️ قائمة المطلوبين أمنياً للدولة (WANTED LIST)</h2>
+            <div class="wanted-grid" id="publicWantedGrid"></div>
+        </div>
+
+        <!-- 3. نظام البصمة والتحضير والنقاط -->
+        <div id="attendance" class="tab-content">
+            <h2 class="section-title">☝️ نظام التبصيم والتحضير الميداني الآلي</h2>
+            
+            <div class="fingerprint-box">
+                <div class="fingerprint-btn" onclick="toggleAttendance()">👇</div>
+                <h3 id="attendanceStatusText" style="color: var(--text-light); margin-bottom: 8px;">اضغط على البصمة لتسجيل الدخول / الخروج</h3>
+                <p style="color: var(--text-muted); font-size: 13px;">ملاحظة: تسجيل الدخول يمنحك <strong>+10 نقاط</strong> والخروج يمنحك <strong>+5 نقاط</strong> تحضيرية.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📜 سجل التحضيرات الميدانية الأخيرة</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم الضابط</th>
+                                <th>نوع الإجراء</th>
+                                <th>الوقت والتاريخ</th>
+                                <th>النقاط المكتسبة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="publicAttendanceTable"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- 3. ملف الضابط -->
+        <!-- 4. قيادات الدولة -->
+        <div id="stateLeaders" class="tab-content">
+            <h2 class="section-title">قيادات دولة Lord Town العليا</h2>
+            <div class="leaders-grid" id="publicLeadersGrid"></div>
+        </div>
+
+        <!-- 5. ملف الضابط -->
         <div id="profile" class="tab-content">
             <h2 class="section-title">🪪 ملف الضابط الشخصي</h2>
             <div class="card" style="max-width: 500px; margin: 0 auto;">
                 <div class="form-group">
                     <label>الاسم في السيرفر (Discord Name):</label>
                     <input type="text" id="policeName" class="form-control" readonly placeholder="يرجى تسجيل الدخول عبر Discord..." style="color: var(--primary); font-weight: bold;">
+                </div>
+                <div class="form-group">
+                    <label>النقاط التراكمية الحالية:</label>
+                    <input type="text" id="officerPointsDisplay" class="form-control" readonly placeholder="0 نقطة" style="color: var(--success); font-weight: bold;">
                 </div>
                 <div class="form-group">
                     <label>الرتبة العسكرية المسجلة:</label>
@@ -599,10 +764,9 @@
             </div>
         </div>
 
-        <!-- 4. الأسلحة والمركبات المصرحة (قائمة عامة) -->
+        <!-- 6. الأسلحة والمركبات -->
         <div id="equipment" class="tab-content">
             <h2 class="section-title">🛡️ قائمة الأسلحة والمركبات المعتمدة رسمياً</h2>
-            
             <div class="equipment-grid">
                 <div class="card">
                     <h3 class="card-title">🔫 الأسلحة المصرحة لقطاع الشرطة</h3>
@@ -636,7 +800,7 @@
             </div>
         </div>
 
-        <!-- 5. جدول التوزيع -->
+        <!-- 7. جدول التوزيع -->
         <div id="roster" class="tab-content">
             <h2 class="section-title">🗺️ جدول توزيع القطاعات</h2>
             <div class="table-container">
@@ -653,7 +817,7 @@
                         <tr>
                             <td>وسط المدينة (Downtown)</td>
                             <td>دورية عامة Alpha</td>
-                            <td> رائد / مشعل بن رائد</td>
+                            <td>رائد / مشعل بن رائد</td>
                             <td><span class="badge badge-active">نشط - تغطية شاملة</span></td>
                         </tr>
                         <tr>
@@ -667,7 +831,83 @@
             </div>
         </div>
 
-        <!-- 6. تقديم الإجازات -->
+        <!-- 8. البلاغات والمخالفات -->
+        <div id="reports" class="tab-content">
+            <h2 class="section-title">🚨 نظام تسجيل البلاغات والمخالفات الميدانية</h2>
+            <div class="admin-grid">
+                <div class="card">
+                    <h3 class="card-title">تسجيل بلاغ / مخالفة جديدة</h3>
+                    <div class="form-group">
+                        <label>اسم الضابط المحرر:</label>
+                        <input type="text" id="reportOfficer" class="form-control" readonly placeholder="سجل الدخول بـ Discord...">
+                    </div>
+                    <div class="form-group">
+                        <label>اسم المشتبه به / المخالف:</label>
+                        <input type="text" id="reportTarget" class="form-control" placeholder="اسم الشخص أو المجموعات...">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الإجراء:</label>
+                        <select id="reportType" class="form-control">
+                            <option value="مخالفة مرورية">مخالفة مرورية</option>
+                            <option value="بلاغ جنائي">بلاغ جنائي / جريمة</option>
+                            <option value="توقيف / حجز">توقيف / حجز مركبة</option>
+                            <option value="مداهمة ميدانية">مداهمة ميدانية</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>تفاصيل البلاغ / الغرامة:</label>
+                        <textarea id="reportDetails" class="form-control" rows="3" placeholder="تفاصيل الحادثة أو قيمة المخالفة..."></textarea>
+                    </div>
+                    <button class="btn-add" style="background: var(--danger); color: #fff;" onclick="submitReport()">إرسال البلاغ للقيادة</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">📋 سجل البلاغات والمخالفات الميدانية</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>المحرر</th>
+                                    <th>المخالف / الهدف</th>
+                                    <th>النوع والتفاصيل</th>
+                                </tr>
+                            </thead>
+                            <tbody id="publicReportsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. القوانين والتعليمات -->
+        <div id="rules" class="tab-content">
+            <h2 class="section-title">📜 اللائحة والقوانين العسكرية الموحدة</h2>
+            <div class="rules-card">
+                <h3>1. الانضباط والتعامل الميداني</h3>
+                <ul>
+                    <li>الالتزام التام بجميع الأوامر الصادرة من القيادات العليا والسلسلة الرتبية.</li>
+                    <li>يُمنع ارتداء الزي العسكري أو تجول الدوريات خارج ساعات الدوام الرسمية.</li>
+                    <li>احترام المواطنين والتعامل بمهنية عالية في جميع المواقف الميدانية.</li>
+                </ul>
+            </div>
+            <div class="rules-card">
+                <h3>2. بروتوكول استخدام السلاح والمطاردات</h3>
+                <ul>
+                    <li>يُمنع استخدام السلاح الحي إلا في حالات التهديد المباشر للحياة أو بأمر قيادي.</li>
+                    <li>المطاردات الميدانية تتطلب التنسيق عبر اللاسلكي وتحديد الموقع بشكل دائم.</li>
+                    <li>استخدام التيسر (Taser) يكون في حالات عدم الاستجابة أو محاولة الهرب بالقدم.</li>
+                </ul>
+            </div>
+            <div class="rules-card">
+                <h3>3. العقوبات والمخالفات الإدارية</h3>
+                <ul>
+                    <li>التغيب عن الاستلام بدون إجازة رسمية يعرض العسكري للإنذار أو التوقيف.</li>
+                    <li>مخالفة الأوامر المباشرة تؤدي إلى سحب الباج العسكري والتخفيض الرتبي.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 10. تقديم الإجازات -->
         <div id="requests" class="tab-content">
             <h2 class="section-title">📝 تقديم طلب إجازة رسمية</h2>
             <div class="admin-grid">
@@ -702,18 +942,18 @@
             </div>
         </div>
 
-        <!-- 7. القائمة العسكرية العامة -->
+        <!-- 11. القائمة العسكرية العامة -->
         <div id="soldiers" class="tab-content">
-            <h2 class="section-title">🎖️ القائمة العامة للعساكر والباجات</h2>
-
+            <h2 class="section-title">🎖️ القائمة العامة للعساكر والباجات والنقاط</h2>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>الباج العسكري</th>
-                            <th>اسم العسكري (في السيرفر)</th>
+                            <th>اسم العسكري</th>
                             <th>الرتبة</th>
                             <th>الفرقة / الوحدة</th>
+                            <th>مجموع النقاط</th>
                             <th>الحالة الحالية</th>
                         </tr>
                     </thead>
@@ -722,46 +962,53 @@
             </div>
         </div>
 
-        <!-- 8. لوحة القيادات والمسؤولين -->
+        <!-- 12. لوحة القيادات -->
         <div id="admin" class="tab-content">
             <h2 class="section-title">🛡️ لوحة القيادة والسيطرة</h2>
 
             <div class="admin-grid">
 
-                <!-- إضافة قيادي جديد للدولة -->
-                <div class="card">
-                    <h3 class="card-title">👑 إدارة قائمة قيادات الدولة</h3>
+                <!-- إضافة وتعديل قائمة المطلوبين -->
+                <div class="card" style="border-color: var(--danger);">
+                    <h3 class="card-title" style="color: var(--danger);">⚠️ إضافة مطلوب جديد للقائمة</h3>
                     <div class="form-group">
-                        <input type="text" id="newLeaderName" class="form-control" placeholder="اسم القائد (مثال: LordTown)">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="newLeaderTitle" class="form-control" placeholder="المنصب (مثال: حاكم الدولة / مدير الأمن العام)">
+                        <label>اسم المطلوب:</label>
+                        <input type="text" id="wantedName" class="form-control" placeholder="اسم المطلوب الكامل...">
                     </div>
                     <div class="form-group">
-                        <textarea id="newLeaderDesc" class="form-control" rows="2" placeholder="نبذة / تعريف مختصر عن القائد..."></textarea>
+                        <label>معلومات وتفاصيل الجرم / السبب:</label>
+                        <textarea id="wantedInfo" class="form-control" rows="2" placeholder="الجرائم والمخالفات المرتكبة..."></textarea>
                     </div>
-                    <button class="btn-add" style="background:#f59e0b; color:#000;" onclick="addLeader()">إضافة للقائمة الرسمية</button>
-                    
-                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 القيادات الحالية:</h4>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>الاسم</th>
-                                    <th>المنصب</th>
-                                    <th>حذف</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminLeadersTable"></tbody>
-                        </table>
+                    <div class="form-group">
+                        <label>رابط الصورة الشخصية (Image URL):</label>
+                        <input type="text" id="wantedImg" class="form-control" placeholder="https://example.com/photo.jpg">
                     </div>
+                    <div class="form-group">
+                        <label>المكافأة / درجة الخطورة:</label>
+                        <input type="text" id="wantedReward" class="form-control" placeholder="مثال: $50,000 أو خطير جداً">
+                    </div>
+                    <button class="btn-add" style="background: var(--danger); color: #fff;" onclick="addWantedByAdmin()">إضافة المطلوب فوراً</button>
                 </div>
 
-                <!-- إضافة عسكري -->
+                <!-- مكافأة أو خصم النقاط من القيادة -->
+                <div class="card">
+                    <h3 class="card-title">⭐ التحكم في نقاط العساكر (إضافة/خصم)</h3>
+                    <div class="form-group">
+                        <label>اختر العسكري:</label>
+                        <select id="adminOfficerSelect" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>عدد النقاط (استخدم علامة - للخصم):</label>
+                        <input type="number" id="adminPointsAmount" class="form-control" placeholder="مثال: 15 أو -10">
+                    </div>
+                    <button class="btn-add" style="background:var(--success); color:#000;" onclick="addPointsByAdmin()">تحديث النقاط</button>
+                </div>
+
+                <!-- إضافة عسكري جديد -->
                 <div class="card">
                     <h3 class="card-title">🎖️ إضافة / تعديل بيانات عسكري</h3>
                     <div class="form-group">
-                        <label>الاسم المطابق لسيرفر الشرطة (Discord Name):</label>
+                        <label>الاسم (Discord Name):</label>
                         <input type="text" id="officerName" class="form-control" placeholder="مثال: Sultan_LSPD">
                     </div>
                     <div class="form-group">
@@ -802,56 +1049,27 @@
                     <button class="btn-add" onclick="addOfficerByAdmin()">اعتماد العسكري</button>
                 </div>
 
-                <!-- إدارة الأسلحة في لوحة القيادة -->
+                <!-- إضافة قيادي للدولة -->
                 <div class="card">
-                    <h3 class="card-title">🔫 إدارة الأسلحة المصرحة</h3>
+                    <h3 class="card-title">👑 إدارة قائمة قيادات الدولة</h3>
                     <div class="form-group">
-                        <input type="text" id="newWeaponName" class="form-control" placeholder="اسم السلاح (مثال: Combat Pistol)">
+                        <input type="text" id="newLeaderName" class="form-control" placeholder="اسم القائد">
                     </div>
                     <div class="form-group">
-                        <input type="text" id="newWeaponRank" class="form-control" placeholder="الصلاحية (مثال: جميع الرتب / SWAT)">
+                        <input type="text" id="newLeaderTitle" class="form-control" placeholder="المنصب">
                     </div>
-                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addWeapon()">إضافة سلاح جديد</button>
-                    
-                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 الأسلحة الحالية:</h4>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>السلاح</th>
-                                    <th>الصلاحية</th>
-                                    <th>حذف</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminWeaponsTable"></tbody>
-                        </table>
+                    <div class="form-group">
+                        <textarea id="newLeaderDesc" class="form-control" rows="2" placeholder="نبذة مختصرة..."></textarea>
                     </div>
+                    <button class="btn-add" style="background:#f59e0b; color:#000;" onclick="addLeader()">إضافة للقائمة الرسمية</button>
                 </div>
 
-                <!-- إدارة المركبات في لوحة القيادة -->
+                <!-- إدارة الأسلحة والسيارات -->
                 <div class="card">
-                    <h3 class="card-title">🚔 إدارة المركبات المصرحة</h3>
-                    <div class="form-group">
-                        <input type="text" id="newVehicleName" class="form-control" placeholder="اسم المركبة (مثال: Vapid Cruiser)">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" id="newVehicleDept" class="form-control" placeholder="القطاع (مثال: دورية عامة)">
-                    </div>
-                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addVehicle()">إضافة مركبة جديدة</button>
-                    
-                    <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 10px;">📋 المركبات الحالية:</h4>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>المركبة</th>
-                                    <th>الاستخدام</th>
-                                    <th>حذف</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminVehiclesTable"></tbody>
-                        </table>
-                    </div>
+                    <h3 class="card-title">🔫 إدارة الأسلحة المصرحة</h3>
+                    <div class="form-group"><input type="text" id="newWeaponName" class="form-control" placeholder="اسم السلاح"></div>
+                    <div class="form-group"><input type="text" id="newWeaponRank" class="form-control" placeholder="الصلاحية"></div>
+                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addWeapon()">إضافة سلاح</button>
                 </div>
 
                 <!-- طلبات الإجازات المعلقة -->
@@ -869,23 +1087,41 @@
                         </table>
                     </div>
                 </div>
-
             </div>
 
-            <!-- إدارة الكادر العسكري -->
+            <!-- إدارة المطلوبين أمنياً من القيادة -->
+            <div class="card" style="border-color: var(--danger);">
+                <h3 class="card-title" style="color:var(--danger);">⚠️ إدارة قائمة المطلوبين أمنياً (حذف / تعديل)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الصورة</th>
+                                <th>الاسم</th>
+                                <th>المعومات والجرم</th>
+                                <th>المكافأة / درجة الخطورة</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminWantedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- سجل العساكر وإدارتهم -->
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
-                    <h3 class="card-title" style="margin:0;">👥 سجل العساكر والتحكم بالحالة</h3>
-                    <input type="text" id="searchInput" class="form-control" style="width: 200px;" placeholder="بحث برقم الباج أو الاسم..." onkeyup="filterOfficers()">
+                    <h3 class="card-title" style="margin:0;">👥 سجل العساكر والنقاط والتحكم بالحالة</h3>
+                    <input type="text" id="searchInput" class="form-control" style="width: 200px;" placeholder="بحث..." onkeyup="filterOfficers()">
                 </div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>الباج</th>
-                                <th>الاسم بالسيرفر</th>
+                                <th>الاسم</th>
                                 <th>الرتبة</th>
-                                <th>الوحدة</th>
+                                <th>النقاط</th>
                                 <th>الحالة</th>
                                 <th>التحكم</th>
                             </tr>
@@ -903,122 +1139,190 @@
         let isAdminLoggedIn = false;
         let currentUserData = null;
 
-        function loginWithDiscord() {
-            window.location.href = `${API_BASE}/api/auth/login`;
-        }
-
-        function logoutDiscord() {
-            window.location.href = window.location.pathname;
-        }
+        function loginWithDiscord() { window.location.href = `${API_BASE}/api/auth/login`; }
+        function logoutDiscord() { window.location.href = window.location.pathname; }
 
         function openTab(evt, tabName) {
             let tabcontent = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
+            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
             let tablinks = document.querySelectorAll(".nav-links button");
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
+            for (let i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
             document.getElementById(tabName).classList.add("active");
             if (evt) evt.currentTarget.classList.add("active");
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function requestAdminAccess(evt) {
-            if (isAdminLoggedIn) {
-                openTab(evt, 'admin');
-            } else {
+            if (isAdminLoggedIn) openTab(evt, 'admin');
+            else {
                 document.getElementById('authOverlay').style.display = 'flex';
                 document.getElementById('adminPasswordInput').focus();
             }
         }
 
         function checkAdminAuth() {
-            const pwd = document.getElementById('adminPasswordInput').value;
-            if (pwd === ADMIN_PASSWORD) {
+            if (document.getElementById('adminPasswordInput').value === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
                 document.getElementById('authOverlay').style.display = 'none';
                 openTab(null, 'admin');
-                document.querySelectorAll('.nav-links button')[7].classList.add('active');
             } else {
                 alert('⚠️ الرمز السري غير صحيح!');
                 document.getElementById('adminPasswordInput').value = '';
             }
         }
 
-        function closeAuthModal() {
-            document.getElementById('authOverlay').style.display = 'none';
-        }
+        function closeAuthModal() { document.getElementById('authOverlay').style.display = 'none'; }
 
         const audio = document.getElementById('bgMusic');
-        const audioIcon = document.getElementById('audioIcon');
-        const audioText = document.getElementById('audioText');
-
         function toggleAudio() {
             if (audio.paused) {
                 audio.play().then(() => {
-                    audioIcon.textContent = '🔊';
-                    audioText.textContent = 'إيقاف الصوت';
-                    document.getElementById('audioToggle').style.background = 'var(--primary)';
-                    document.getElementById('audioToggle').style.color = '#000';
+                    document.getElementById('audioIcon').textContent = '🔊';
+                    document.getElementById('audioText').textContent = 'إيقاف الصوت';
                 }).catch(err => console.log(err));
             } else {
                 audio.pause();
-                audioIcon.textContent = '🔈';
-                audioText.textContent = 'تشغيل الصوت';
-                document.getElementById('audioToggle').style.background = 'rgba(26, 17, 8, 0.9)';
-                document.getElementById('audioToggle').style.color = 'var(--primary)';
+                document.getElementById('audioIcon').textContent = '🔈';
+                document.getElementById('audioText').textContent = 'تشغيل الصوت';
             }
         }
 
-        // البيانات المخزنة
+        // البيانات المخزنة LocalStorage
         let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [];
         let requests = JSON.parse(localStorage.getItem('lspd_requests')) || [];
-        
+        let reports = JSON.parse(localStorage.getItem('lspd_reports')) || [];
+        let attendanceLogs = JSON.parse(localStorage.getItem('lspd_attendance')) || [];
+        let wantedList = JSON.parse(localStorage.getItem('lspd_wanted')) || [
+            { id: 1, name: "مايكل تايلور", info: "سطو مسلح على البنك المركز والتعدي على رجال الأمن.", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500", reward: "خطير جداً - $100,000" }
+        ];
         let leadersList = JSON.parse(localStorage.getItem('lspd_leaders')) || [
-            { id: 1, name: "LordTown", title: "حاكم الدولة", desc: "المسؤول الأعلى عن إدارة شؤون الدولة وسيادتها." },
-            { id: 2, name: "Sultan", title: "مدير الأمن العام", desc: "المشرف العام على قطاع الشرطة LSPD والعمليات الميدانية." }
+            { id: 1, name: "LordTown", title: "حاكم الدولة", desc: "المسؤول الأعلى عن إدارة شؤون الدولة وسيادتها." }
         ];
-
         let weaponsList = JSON.parse(localStorage.getItem('lspd_weapons')) || [
-            { id: 1, name: "Taser Stun Gun", rank: "جميع الرتب" },
-            { id: 2, name: "Combat Pistol", rank: "جندي فما فوق" },
-            { id: 3, name: "Carbine Rifle (M4)", rank: "رقيب فما فوق / SWAT" }
+            { id: 1, name: "Combat Pistol", rank: "جميع الرتب" }
         ];
-
         let vehiclesList = JSON.parse(localStorage.getItem('lspd_vehicles')) || [
-            { id: 1, name: "Vapid Stanier Cruiser", dept: "دورية عامة" },
-            { id: 2, name: "Bravado Buffalo STX", dept: "وحدة المطاردات" },
-            { id: 3, name: "Brute BearCat Armored", dept: "فرق SWAT والمهام الخاصة" }
+            { id: 1, name: "Vapid Stanier Cruiser", dept: "دورية عامة" }
         ];
 
         function saveData() {
             localStorage.setItem('lspd_officers', JSON.stringify(officers));
             localStorage.setItem('lspd_requests', JSON.stringify(requests));
+            localStorage.setItem('lspd_reports', JSON.stringify(reports));
+            localStorage.setItem('lspd_attendance', JSON.stringify(attendanceLogs));
+            localStorage.setItem('lspd_wanted', JSON.stringify(wantedList));
             localStorage.setItem('lspd_weapons', JSON.stringify(weaponsList));
             localStorage.setItem('lspd_vehicles', JSON.stringify(vehiclesList));
             localStorage.setItem('lspd_leaders', JSON.stringify(leadersList));
             renderAll();
         }
 
-        function addLeader() {
-            const name = document.getElementById('newLeaderName').value.trim();
-            const title = document.getElementById('newLeaderTitle').value.trim();
-            const desc = document.getElementById('newLeaderDesc').value.trim();
+        // إضافة مطلوب أمنياً من اللوحة
+        function addWantedByAdmin() {
+            const name = document.getElementById('wantedName').value.trim();
+            const info = document.getElementById('wantedInfo').value.trim();
+            let img = document.getElementById('wantedImg').value.trim();
+            const reward = document.getElementById('wantedReward').value.trim();
 
-            if (!name || !title) return alert("يرجى إدخال اسم القيادي ومنصبه!");
+            if (!name || !info) return alert("يرجى كتابة اسم المطلوب والمعلومات الأساسية عنه!");
 
-            leadersList.push({ id: Date.now(), name: name, title: title, desc: desc || "لا يوجد تعريف إضافي." });
+            if (!img) {
+                img = "https://cdn.discordapp.com/embed/avatars/0.png";
+            }
+
+            wantedList.push({
+                id: Date.now(),
+                name: name,
+                info: info,
+                img: img,
+                reward: reward || "مطلوب فوراً"
+            });
+
             saveData();
-            document.getElementById('newLeaderName').value = '';
-            document.getElementById('newLeaderTitle').value = '';
-            document.getElementById('newLeaderDesc').value = '';
+            document.getElementById('wantedName').value = '';
+            document.getElementById('wantedInfo').value = '';
+            document.getElementById('wantedImg').value = '';
+            document.getElementById('wantedReward').value = '';
+            alert("⚠️ تم إضافة المطلوب لقائمة الدولة بنجاح!");
         }
 
-        function deleteLeader(id) {
-            leadersList = leadersList.filter(l => l.id !== id);
+        function deleteWanted(id) {
+            if (confirm("هل تم إلقاء القبض أو تريد إزالة المطلوب من القائمة؟")) {
+                wantedList = wantedList.filter(w => w.id !== id);
+                saveData();
+            }
+        }
+
+        // نظام البصمة والدخول والخروج
+        function toggleAttendance() {
+            if (!currentUserData) {
+                return alert("⚠️ يجب عليك تسجيل الدخول بـ Discord أولاً للتبصيم والتحضير!");
+            }
+
+            const name = currentUserData.displayName;
+            let officer = officers.find(o => o.name.toLowerCase() === name.toLowerCase());
+
+            if (!officer) {
+                officer = {
+                    id: Date.now(),
+                    badge: "غير مخصص",
+                    name: name,
+                    rank: "مستجد",
+                    dept: "تحت التدريب",
+                    status: "active",
+                    points: 0,
+                    isLoggedIn: false
+                };
+                officers.push(officer);
+            }
+
+            if (!officer.points) officer.points = 0;
+
+            const now = new Date();
+            const timeString = `${now.toLocaleDateString('ar-SA')} - ${now.toLocaleTimeString('ar-SA')}`;
+
+            if (!officer.isLoggedIn) {
+                officer.isLoggedIn = true;
+                officer.points += 10;
+                attendanceLogs.unshift({
+                    name: name,
+                    type: "تسجيل دخول (دوري)",
+                    time: timeString,
+                    pointsGained: "+10 نقاط"
+                });
+                alert(`✅ تم تبصيم دخولك بنجاح! تم إضافة 10 نقاط لحسابك. مجموع نقاطك الآن: ${officer.points}`);
+            } else {
+                officer.isLoggedIn = false;
+                officer.points += 5;
+                attendanceLogs.unshift({
+                    name: name,
+                    type: "تسجيل خروج (نهاية الاستلام)",
+                    time: timeString,
+                    pointsGained: "+5 نقاط"
+                });
+                alert(`🔴 تم تبصيم خروجك بنجاح! تم إضافة 5 نقاط لحسابك. مجموع نقاطك الآن: ${officer.points}`);
+            }
+
             saveData();
+        }
+
+        function addPointsByAdmin() {
+            const selectElem = document.getElementById('adminOfficerSelect');
+            const amountElem = document.getElementById('adminPointsAmount');
+            const officerId = parseInt(selectElem.value);
+            const pointsToAdd = parseInt(amountElem.value);
+
+            if (!officerId || isNaN(pointsToAdd)) {
+                return alert("الرجاء اختيار العسكري وتحديد عدد النقاط!");
+            }
+
+            const officer = officers.find(o => o.id === officerId);
+            if (officer) {
+                officer.points = (officer.points || 0) + pointsToAdd;
+                alert(`✅ تم تعديل نقاط العسكري (${officer.name}) بنجاح. النقاط الجديدة: ${officer.points}`);
+                amountElem.value = '';
+                saveData();
+            }
         }
 
         function addOfficerByAdmin() {
@@ -1027,8 +1331,7 @@
             const rank = document.getElementById('officerRank').value;
             const dept = document.getElementById('department').value;
 
-            if (!name) return alert("الرجاء إدخال اسم العسكري في السيرفر!");
-            if (!badge) return alert("الرجاء إدخال الباج العسكري الخاص بالعسكري!");
+            if (!name || !badge) return alert("الرجاء إكمال بيانات الاسم والباج!");
 
             const existingIndex = officers.findIndex(o => o.name.toLowerCase() === name.toLowerCase());
 
@@ -1036,7 +1339,6 @@
                 officers[existingIndex].badge = badge;
                 officers[existingIndex].rank = rank;
                 officers[existingIndex].dept = dept;
-                alert(`✅ تم تحديث بيانات العسكري (${name}) بنجاح!`);
             } else {
                 officers.push({
                     id: Date.now(),
@@ -1044,9 +1346,10 @@
                     name: name,
                     rank: rank,
                     dept: dept,
-                    status: "active"
+                    status: "active",
+                    points: 0,
+                    isLoggedIn: false
                 });
-                alert(`✅ تم تسجيل العسكري (${name}) بنجاح!`);
             }
 
             saveData();
@@ -1054,40 +1357,8 @@
             document.getElementById('badgeNumber').value = '';
         }
 
-        function addWeapon() {
-            const name = document.getElementById('newWeaponName').value.trim();
-            const rank = document.getElementById('newWeaponRank').value.trim();
-            if(!name || !rank) return alert("يرجى إكمال بيانات السلاح!");
-
-            weaponsList.push({ id: Date.now(), name: name, rank: rank });
-            saveData();
-            document.getElementById('newWeaponName').value = '';
-            document.getElementById('newWeaponRank').value = '';
-        }
-
-        function deleteWeapon(id) {
-            weaponsList = weaponsList.filter(w => w.id !== id);
-            saveData();
-        }
-
-        function addVehicle() {
-            const name = document.getElementById('newVehicleName').value.trim();
-            const dept = document.getElementById('newVehicleDept').value.trim();
-            if(!name || !dept) return alert("يرجى إكمال بيانات المركبة!");
-
-            vehiclesList.push({ id: Date.now(), name: name, dept: dept });
-            saveData();
-            document.getElementById('newVehicleName').value = '';
-            document.getElementById('newVehicleDept').value = '';
-        }
-
-        function deleteVehicle(id) {
-            vehiclesList = vehiclesList.filter(v => v.id !== id);
-            saveData();
-        }
-
         function deleteOfficer(id) {
-            if (confirm("هل أنت تأكد من حذف العسكري من السجل العام؟")) {
+            if (confirm("هل أنت تأكد من الحذف؟")) {
                 officers = officers.filter(o => o.id !== id);
                 saveData();
             }
@@ -1104,177 +1375,133 @@
         }
 
         function submitRequest() {
-            if (!currentUserData) {
-                return alert("⚠️ يجب عليك تسجيل الدخول بحساب Discord لتأكيد هويتك وإرسال الطلب!");
-            }
-
-            const name = currentUserData.displayName;
+            if (!currentUserData) return alert("⚠️ يجب عليك تسجيل الدخول بحساب Discord!");
             const reason = document.getElementById('reqReason').value.trim();
+            if (!reason) return alert("اكتب سبب الطلب!");
 
-            if (!reason) return alert("الرجاء كتابة أسباب ومدة الإجازة المطلوب التقديم عليها!");
-
-            requests.push({
-                id: Date.now(),
-                name: name,
-                reason: reason,
-                status: 'pending'
-            });
-
+            requests.push({ id: Date.now(), name: currentUserData.displayName, reason: reason, status: 'pending' });
             saveData();
             document.getElementById('reqReason').value = '';
-            alert("✅ تم تقديم طلب الإجازة بنجاح، وهو الآن أوان المراجعة والاعتماد من القيادة.");
+            alert("✅ تم تقديم طلب الإجازة بنجاح.");
         }
 
-        function handleRequest(id, newStatus) {
-            const req = requests.find(r => r.id === id);
-            if (req) {
-                req.status = newStatus;
-                
-                if (newStatus === 'approved') {
-                    const officer = officers.find(o => 
-                        o.name.trim().toLowerCase() === req.name.trim().toLowerCase() ||
-                        req.name.toLowerCase().includes(o.name.toLowerCase()) || 
-                        o.name.toLowerCase().includes(req.name.toLowerCase())
-                    );
+        function submitReport() {
+            if (!currentUserData) return alert("⚠️ سجل الدخول بـ Discord أولاً!");
+            const target = document.getElementById('reportTarget').value.trim();
+            const details = document.getElementById('reportDetails').value.trim();
+            if (!target || !details) return alert("أكمل كافة البيانات!");
 
-                    if (officer) {
-                        officer.status = 'leave';
-                        alert(`✅ تم قبول الإجازة وتحديث حالة العسكري (${officer.name}) تلقائياً إلى: "في إجازة".`);
-                    } else {
-                        alert(`⚠️ تم قبول طلب الإجازة، ولكن الاسم (${req.name}) غير مسجل في القائمة العسكرية القيادية المباشرة.`);
-                    }
-                }
-                saveData();
-            }
+            reports.push({ id: Date.now(), officer: currentUserData.displayName, target: target, type: document.getElementById('reportType').value, details: details });
+            saveData();
+            document.getElementById('reportTarget').value = '';
+            document.getElementById('reportDetails').value = '';
+            alert("🚨 تم تسجيل البلاغ والمخالفة!");
         }
 
         function renderAll() {
             document.getElementById('homeTotalOfficers').textContent = officers.length;
             document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
+            document.getElementById('homeTotalWanted').textContent = wantedList.length;
             document.getElementById('homeLeaveOfficers').textContent = officers.filter(o => o.status === 'leave').length;
             document.getElementById('homeTotalRequests').textContent = requests.filter(r => r.status === 'pending').length;
 
-            // 1. عرض قيادات الدولة (الصفحة العامة)
-            document.getElementById('publicLeadersGrid').innerHTML = leadersList.map(l => `
-                <div class="leader-card">
-                    <div class="leader-avatar">👑</div>
-                    <div class="leader-title">${l.title}</div>
-                    <div class="leader-name">${l.name}</div>
-                    <div class="leader-desc">${l.desc}</div>
+            // عرض قائمة المطلوبين بالواجهة العامة
+            document.getElementById('publicWantedGrid').innerHTML = wantedList.map(w => `
+                <div class="wanted-card">
+                    <div class="wanted-header">MOST WANTED • مطلوب أمنياً</div>
+                    <img src="${w.img}" alt="${w.name}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                    <div class="wanted-body">
+                        <div class="wanted-name">${w.name}</div>
+                        <div class="wanted-info">${w.info}</div>
+                        <div class="wanted-danger-level">
+                            <span>الدرجة / المكافأة:</span>
+                            <span style="color:var(--danger);">${w.reward}</span>
+                        </div>
+                    </div>
                 </div>
-            `).join('') || `<p style="text-align:center; grid-column: 1/-1; color: var(--text-muted);">لا توجد قيادات مسجلة حالياً.</p>`;
+            `).join('') || `<p style="text-align:center; color:var(--text-muted); grid-column: 1/-1;">لا يوجد مطلوبين أمنياً في القائمة حالياً.</p>`;
 
-            // 2. عرض قيادات الدولة داخل لوحة المسؤولين (للحذف)
-            document.getElementById('adminLeadersTable').innerHTML = leadersList.map(l => `
+            // عرض إدارة المطلوبين بداخل لوحة التحكم
+            document.getElementById('adminWantedTable').innerHTML = wantedList.map(w => `
                 <tr>
-                    <td><strong>${l.name}</strong></td>
-                    <td><small>${l.title}</small></td>
-                    <td><button class="action-btn btn-delete" title="حذف القائد" onclick="deleteLeader(${l.id})">🗑️</button></td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
-
-            // 3. عرض الأسلحة العامة
-            document.getElementById('publicWeaponsTable').innerHTML = weaponsList.map(w => `
-                <tr>
+                    <td><img src="${w.img}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'"></td>
                     <td><strong>${w.name}</strong></td>
-                    <td><span class="badge badge-active">${w.rank}</span></td>
+                    <td><small>${w.info}</small></td>
+                    <td><span class="badge badge-suspended">${w.reward}</span></td>
+                    <td><button class="action-btn btn-delete" onclick="deleteWanted(${w.id})">🗑️ تم القبض / حذف</button></td>
                 </tr>
-            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد أسلحة مسجلة.</td></tr>`;
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
-            // 4. عرض المركبات العامة
-            document.getElementById('publicVehiclesTable').innerHTML = vehiclesList.map(v => `
-                <tr>
-                    <td><strong>${v.name}</strong></td>
-                    <td><span class="badge badge-leave">${v.dept}</span></td>
-                </tr>
-            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد مركبات مسجلة.</td></tr>`;
+            // تحديث قائمة العساكر لتغيير النقاط في اللوحة
+            const selectElem = document.getElementById('adminOfficerSelect');
+            selectElem.innerHTML = '<option value="">-- اختر العسكري --</option>' + officers.map(o => `<option value="${o.id}">${o.name} (الباج: ${o.badge}) - [${o.points || 0} نقطة]</option>`).join('');
 
-            // 5. عرض الأسلحة داخل لوحة القيادة
-            document.getElementById('adminWeaponsTable').innerHTML = weaponsList.map(w => `
-                <tr>
-                    <td><strong>${w.name}</strong></td>
-                    <td><small>${w.rank}</small></td>
-                    <td><button class="action-btn btn-delete" onclick="deleteWeapon(${w.id})">🗑️</button></td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
-
-            // 6. عرض المركبات داخل لوحة القيادة
-            document.getElementById('adminVehiclesTable').innerHTML = vehiclesList.map(v => `
-                <tr>
-                    <td><strong>${v.name}</strong></td>
-                    <td><small>${v.dept}</small></td>
-                    <td><button class="action-btn btn-delete" onclick="deleteVehicle(${v.id})">🗑️</button></td>
-                </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">القائمة فارغة.</td></tr>`;
-
-            // 7. جدول القائمة العامة
-            const publicOfficersTbody = document.getElementById('publicOfficersTable');
-            publicOfficersTbody.innerHTML = officers.map(o => `
+            // الجدول العام للعساكر
+            document.getElementById('publicOfficersTable').innerHTML = officers.map(o => `
                 <tr>
                     <td><span class="rank-badge">${o.badge}</span></td>
                     <td><strong>${o.name}</strong></td>
                     <td>${o.rank}</td>
                     <td>${o.dept}</td>
+                    <td><span class="points-badge">⭐ ${o.points || 0} نقطة</span></td>
                     <td>
                         <span class="badge ${o.status === 'active' ? 'badge-active' : o.status === 'leave' ? 'badge-leave' : 'badge-suspended'}">
                             ${o.status === 'active' ? 'على رأس العمل' : o.status === 'leave' ? 'في إجازة' : 'موقوف'}
                         </span>
                     </td>
                 </tr>
-            `).join('') || `<tr><td colspan="5" style="text-align:center;">لم يتم تسجيل أي عسكري بعد من قبل القيادة.</td></tr>`;
+            `).join('') || `<tr><td colspan="6" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
-            // 8. جدول الإدارة للقيادات
-            const adminOfficersTbody = document.getElementById('adminOfficersTable');
-            adminOfficersTbody.innerHTML = officers.map(o => `
+            // جدول تحكم القيادة بالعساكر
+            document.getElementById('adminOfficersTable').innerHTML = officers.map(o => `
                 <tr>
                     <td><strong>${o.badge}</strong></td>
                     <td>${o.name}</td>
                     <td>${o.rank}</td>
-                    <td>${o.dept}</td>
+                    <td><strong>${o.points || 0}</strong></td>
                     <td>
                         <span class="badge ${o.status === 'active' ? 'badge-active' : o.status === 'leave' ? 'badge-leave' : 'badge-suspended'}">
                             ${o.status === 'active' ? 'ميداني' : o.status === 'leave' ? 'إجازة' : 'موقوف'}
                         </span>
                     </td>
                     <td>
-                        <button class="action-btn btn-status" title="تغيير الحالة" onclick="toggleStatus(${o.id})">🔄</button>
-                        <button class="action-btn btn-delete" title="حذف" onclick="deleteOfficer(${o.id})">🗑️</button>
+                        <button class="action-btn btn-status" onclick="toggleStatus(${o.id})">🔄</button>
+                        <button class="action-btn btn-delete" onclick="deleteOfficer(${o.id})">🗑️</button>
                     </td>
                 </tr>
             `).join('') || `<tr><td colspan="6" style="text-align:center;">القائمة فارغة.</td></tr>`;
 
-            // 9. طلبات الإجازة العامة
-            const publicReqTbody = document.getElementById('publicRequestsTable');
-            publicReqTbody.innerHTML = requests.map(r => `
+            // جدول سجل التبصيم
+            document.getElementById('publicAttendanceTable').innerHTML = attendanceLogs.slice(0, 15).map(a => `
                 <tr>
-                    <td>${r.name}</td>
-                    <td>${r.reason}</td>
-                    <td>
-                        <span class="badge ${r.status === 'approved' ? 'badge-leave' : r.status === 'rejected' ? 'badge-suspended' : 'badge-active'}">
-                            ${r.status === 'approved' ? 'مقبولة (في إجازة)' : r.status === 'rejected' ? 'مرفوضة' : 'قيد النظر'}
-                        </span>
-                    </td>
+                    <td><strong>${a.name}</strong></td>
+                    <td>${a.type}</td>
+                    <td><small>${a.time}</small></td>
+                    <td><span style="color:var(--success); font-weight:bold;">${a.pointsGained}</span></td>
                 </tr>
-            `).join('') || `<tr><td colspan="3" style="text-align:center;">لا توجد طلبات إجازة مسجلة.</td></tr>`;
+            `).join('') || `<tr><td colspan="4" style="text-align:center;">لا توجد سجلات تحضير بالبصمة حتى الآن.</td></tr>`;
 
-            // 10. طلبات الإجازة للقيادة
-            const adminReqTbody = document.getElementById('adminRequestsTable');
-            adminReqTbody.innerHTML = requests.filter(r => r.status === 'pending').map(r => `
-                <tr>
-                    <td><strong>${r.name}</strong><br><small style="color:var(--text-muted);">${r.reason}</small></td>
-                    <td>
-                        <button class="action-btn btn-status" onclick="handleRequest(${r.id}, 'approved')">✅ قبول</button>
-                        <button class="action-btn btn-delete" onclick="handleRequest(${r.id}, 'rejected')">❌ رفض</button>
-                    </td>
-                </tr>
-            `).join('') || `<tr><td colspan="2" style="text-align:center;">لا توجد طلبات معلقة.</td></tr>`;
+            // القيادات، الأسلحة، البلاغات
+            document.getElementById('publicLeadersGrid').innerHTML = leadersList.map(l => `<div class="leader-card"><div class="leader-avatar">👑</div><div class="leader-title">${l.title}</div><div class="leader-name">${l.name}</div><div class="leader-desc">${l.desc}</div></div>`).join('');
+            document.getElementById('publicWeaponsTable').innerHTML = weaponsList.map(w => `<tr><td><strong>${w.name}</strong></td><td><span class="badge badge-active">${w.rank}</span></td></tr>`).join('');
+            document.getElementById('publicVehiclesTable').innerHTML = vehiclesList.map(v => `<tr><td><strong>${v.name}</strong></td><td><span class="badge badge-leave">${v.dept}</span></td></tr>`).join('');
+            document.getElementById('publicReportsTable').innerHTML = reports.map(r => `<tr><td><strong>${r.officer}</strong></td><td>${r.target}</td><td><span class="badge badge-suspended">${r.type}</span><br><small style="color:var(--text-muted);">${r.details}</small></td></tr>`).join('');
+            document.getElementById('publicRequestsTable').innerHTML = requests.map(r => `<tr><td>${r.name}</td><td>${r.reason}</td><td><span class="badge ${r.status === 'approved' ? 'badge-leave' : r.status === 'rejected' ? 'badge-suspended' : 'badge-active'}">${r.status === 'approved' ? 'مقبولة' : r.status === 'rejected' ? 'مرفوضة' : 'قيد النظر'}</span></td></tr>`).join('');
 
+            // تحديث الملف الشخصي للضابط
             if (currentUserData) {
                 const foundOfficer = officers.find(o => o.name.toLowerCase() === currentUserData.displayName.toLowerCase());
                 if (foundOfficer) {
                     document.getElementById('rankName').value = foundOfficer.rank;
                     document.getElementById('rankLevel').value = foundOfficer.badge;
                     document.getElementById('deptName').value = foundOfficer.dept;
+                    document.getElementById('officerPointsDisplay').value = `${foundOfficer.points || 0} نقطة تراكمية`;
+                    
+                    if(foundOfficer.isLoggedIn) {
+                        document.getElementById('attendanceStatusText').innerHTML = "حالتك الآن: <span style='color:var(--success);'>على رأس العمل (مسجل دخول)</span> - اضغط للبصمة والخروج";
+                    } else {
+                        document.getElementById('attendanceStatusText').innerHTML = "حالتك الآن: <span style='color:var(--danger);'>خارج الاستلام</span> - اضغط للبصمة والدخول";
+                    }
                 }
             }
         }
@@ -1282,21 +1509,17 @@
         function filterOfficers() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const rows = document.querySelectorAll('#adminOfficersTable tr');
-            rows.forEach(row => {
-                row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
-            });
+            rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none'; });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             renderAll();
-
             const urlParams = new URLSearchParams(window.location.search);
             const userParam = urlParams.get('user');
 
             if (userParam) {
                 try {
                     currentUserData = JSON.parse(decodeURIComponent(userParam));
-
                     const displayName = currentUserData.serverName || currentUserData.nickname || currentUserData.username || 'ضابط';
                     currentUserData.displayName = displayName;
 
@@ -1306,16 +1529,11 @@
                     document.getElementById('mainDiscordLoginBtn').style.display = 'none';
 
                     document.getElementById('policeName').value = displayName;
-
-                    if (document.getElementById('reqName')) {
-                        document.getElementById('reqName').value = displayName;
-                    }
+                    if (document.getElementById('reqName')) document.getElementById('reqName').value = displayName;
+                    if (document.getElementById('reportOfficer')) document.getElementById('reportOfficer').value = displayName;
 
                     renderAll();
-
-                } catch (err) {
-                    console.error("خطأ قراءة بيانات ديسكورد:", err);
-                }
+                } catch (err) { console.error("خطأ:", err); }
             }
         });
     </script>
