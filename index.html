@@ -3,708 +3,1539 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LordTown V2 | نظام الاستخبارات والقيادة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>LordTown | البوابة الرسمية LSPD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #02040a;
-            --neon-blue: #00f3ff;
-            --neon-purple: #bc13fe;
-            --neon-red: #ff003c;
-            --neon-green: #00ff66;
-            --glass-bg: rgba(10, 15, 30, 0.6);
-            --glass-border: rgba(0, 243, 255, 0.2);
-            --text-main: #e2e8f0;
-            --text-muted: #64748b;
+            --bg-main: #0f0a05;
+            --bg-card: #1a1108;
+            --primary: #ff7b00;
+            --primary-hover: #e06c00;
+            --primary-glow: rgba(255, 123, 0, 0.2);
+            --text-light: #ffffff;
+            --text-muted: #a89f94;
+            --border-color: #332010;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
-            background-color: var(--bg-base); color: var(--text-main);
-            height: 100vh; overflow: hidden; display: flex; position: relative;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            padding-bottom: 80px;
         }
 
-        /* خلفية الشبكة المتحركة (Cyberpunk Grid) */
-        .grid-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px; z-index: -2;
-            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
-            animation: gridMove 10s linear infinite;
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 10, 5, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
         }
-        .grid-glow {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(188, 19, 254, 0.1), transparent 60%);
-            z-index: -1;
-        }
-        @keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
 
-        /* ================= شاشة الإقلاع (Terminal Boot) ================= */
-        #boot-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10000; display: flex; flex-direction: column;
-            justify-content: center; align-items: flex-start; padding: 50px;
-            font-family: 'Rajdhani', monospace; color: var(--neon-green);
+        .nav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
         }
-        .boot-text { font-size: 20px; line-height: 1.5; text-shadow: 0 0 5px var(--neon-green); }
-        .cursor { display: inline-block; width: 10px; height: 20px; background: var(--neon-green); animation: blink 1s step-end infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* ================= بوابة الدخول الزجاجية ================= */
-        #login-gateway {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; justify-content: center; align-items: center; z-index: 9999;
-            backdrop-filter: blur(20px); background: rgba(0,0,0,0.7);
-            opacity: 0; transition: opacity 1s ease;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--text-light);
         }
-        .login-card {
-            background: var(--glass-bg); border: 1px solid var(--neon-blue);
-            padding: 50px; border-radius: 20px; text-align: center; width: 450px;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1), inset 0 0 20px rgba(0, 243, 255, 0.05);
-            position: relative; overflow: hidden;
-            transform: translateY(50px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+        .logo img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
         }
-        .login-card.show { transform: translateY(0); }
+
+        .user-header-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 123, 0, 0.08);
+            border: 1px solid var(--border-color);
+            padding: 5px 12px;
+            border-radius: 25px;
+            max-width: 50%;
+        }
+
+        .user-header-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--primary);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .user-header-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-discord-login {
+            background-color: #5865f2;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-discord-login:hover {
+            background-color: #4752c4;
+        }
+
+        .logout-link {
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-right: 5px;
+            flex-shrink: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 12px 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-links button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .nav-links button.active {
+            color: var(--primary);
+            background: rgba(255, 123, 0, 0.1);
+            border: 1px solid var(--primary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
         
-        .glow-circle {
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            width: 150px; height: 150px; background: var(--neon-blue);
-            filter: blur(80px); opacity: 0.3; pointer-events: none;
+        .hero-card h1 {
+            color: var(--primary);
+            font-size: 30px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px var(--primary-glow);
         }
 
-        .login-title { font-size: 32px; font-weight: 900; margin: 15px 0 5px; color: #fff; text-shadow: 0 0 10px var(--neon-blue); }
-        .login-subtitle { color: var(--neon-purple); font-size: 14px; font-weight: 700; margin-bottom: 30px; letter-spacing: 2px; }
-
-        .btn-holo {
-            background: rgba(0, 243, 255, 0.05); color: #fff;
-            border: 1px solid var(--neon-blue); padding: 15px 25px;
-            border-radius: 10px; width: 100%; font-size: 16px; font-weight: 800;
-            cursor: pointer; transition: 0.4s; display: flex; align-items: center; justify-content: center; gap: 12px;
-            position: relative; overflow: hidden; margin-bottom: 15px; text-transform: uppercase;
+        .hero-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-weight: 600;
         }
-        .btn-holo::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
         }
-        .btn-holo:hover::before { left: 100%; }
-        .btn-holo:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 20px var(--neon-blue); transform: scale(1.02); }
-        
-        .btn-holo.danger { border-color: var(--neon-red); color: var(--neon-red); }
-        .btn-holo.danger:hover { background: var(--neon-red); color: #fff; box-shadow: 0 0 20px var(--neon-red); }
 
-        .admin-input {
-            width: 100%; background: rgba(0,0,0,0.6); border: 2px dashed var(--neon-red);
-            color: var(--neon-red); padding: 15px; border-radius: 10px;
-            text-align: center; font-size: 24px; font-family: 'Rajdhani'; font-weight: bold;
-            outline: none; margin-bottom: 15px; letter-spacing: 10px; transition: 0.3s;
+        .tags span {
+            background: rgba(255, 123, 0, 0.05);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
         }
-        .admin-input:focus { border-style: solid; box-shadow: 0 0 15px rgba(255,0,60,0.4); }
 
-        /* ================= التطبيق الرئيسي ================= */
-        #app-wrapper { display: flex; width: 100%; height: 100%; opacity: 0; transition: opacity 1s; pointer-events: none; }
-        
-        /* القائمة الجانبية المحدثة */
-        .sidebar {
-            width: 300px; background: rgba(5, 8, 20, 0.8); backdrop-filter: blur(20px);
-            border-left: 1px solid var(--glass-border); padding: 30px 20px;
-            display: flex; flex-direction: column; z-index: 10;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        .brand { text-align: center; padding-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
-        .brand h1 { font-family: 'Rajdhani'; font-size: 35px; color: #fff; text-shadow: 0 0 15px var(--neon-blue); line-height: 1; }
-        .brand span { font-size: 11px; color: var(--neon-purple); font-weight: 700; letter-spacing: 3px; }
 
-        .menu-category { color: var(--text-muted); font-size: 10px; font-weight: 900; margin: 15px 0 10px; letter-spacing: 1px; }
-        .nav-btn {
-            width: 100%; background: transparent; border: none; color: var(--text-main);
-            text-align: right; padding: 14px 20px; border-radius: 12px;
-            font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; gap: 15px; margin-bottom: 8px; position: relative;
-        }
-        .nav-btn i { font-size: 18px; color: var(--text-muted); transition: 0.3s; width: 25px; text-align: center; }
-        .nav-btn:hover { background: rgba(0, 243, 255, 0.05); padding-right: 25px; }
-        .nav-btn:hover i { color: var(--neon-blue); }
-        .nav-btn.active { background: linear-gradient(90deg, rgba(0,243,255,0.1), transparent); color: #fff; border-right: 4px solid var(--neon-blue); }
-        .nav-btn.active i { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
-
-        /* منطقة المحتوى */
-        .main-area { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        
-        .top-bar {
-            background: rgba(5, 8, 20, 0.5); backdrop-filter: blur(10px);
-            padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .time-box { font-family: 'Rajdhani'; font-size: 22px; color: var(--neon-blue); font-weight: bold; letter-spacing: 2px;}
-        
-        .user-chip { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); padding: 5px 20px 5px 5px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
-        .user-chip img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-purple); }
-        .user-chip-info { text-align: left; line-height: 1.2; }
-        .user-chip-name { font-weight: 800; font-size: 14px; }
-        .user-chip-role { font-size: 11px; color: var(--neon-purple); }
-        .logout-icon { color: var(--neon-red); cursor: pointer; padding: 10px; font-size: 18px; transition: 0.3s; }
-        .logout-icon:hover { text-shadow: 0 0 10px var(--neon-red); transform: scale(1.1); }
-
-        .content-container { padding: 40px; overflow-y: auto; height: 100%; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ================= الكروت والجداول ================= */
-        .page-title { font-size: 30px; font-weight: 900; margin-bottom: 30px; color: #fff; display: flex; align-items: center; gap: 15px; }
-        .page-title i { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px; }
         .stat-box {
-            background: var(--glass-bg); backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: 0.4s; position: relative; overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
         }
-        .stat-box::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-blue); }
-        .stat-box:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.5), 0 0 20px rgba(0,243,255,0.1); border-color: var(--neon-blue); }
-        .stat-val { font-family: 'Rajdhani'; font-size: 45px; font-weight: bold; line-height: 1; margin-bottom: 5px; }
-        .stat-label { color: var(--text-muted); font-size: 14px; font-weight: 700; }
-        .stat-icon { font-size: 40px; color: rgba(0,243,255,0.2); transition: 0.4s; }
-        .stat-box:hover .stat-icon { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); transform: scale(1.1); }
 
-        .panel-card {
-            background: var(--glass-bg); backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 30px; margin-bottom: 30px;
+        .stat-box .number {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-light);
+            margin-bottom: 5px;
         }
+
+        .stat-box .label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        th {
+            background: rgba(255, 123, 0, 0.05);
+            color: var(--primary);
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .badge-active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .badge-leave { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+        .badge-suspended { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         
-        table { width: 100%; border-collapse: collapse; text-align: right; }
-        th { padding: 15px; font-size: 12px; color: var(--neon-purple); text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        td { padding: 18px 15px; font-size: 14px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.3s; }
-        tr:hover td { background: rgba(0, 243, 255, 0.05); }
-
-        /* ================= جهاز البصمة المتطور ================= */
-        .scanner-wrapper { display: flex; flex-direction: column; align-items: center; padding: 40px 0; }
-        .scanner-btn {
-            width: 220px; height: 220px; border-radius: 50%;
-            background: rgba(0, 243, 255, 0.02);
-            border: 2px solid rgba(0, 243, 255, 0.3);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.4s;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,243,255,0.1);
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
-        .scanner-btn i { font-size: 70px; color: var(--neon-blue); transition: 0.3s; margin-bottom: 10px; }
-        .scanner-btn:hover { border-color: var(--neon-blue); box-shadow: 0 0 40px rgba(0,243,255,0.4), inset 0 0 40px rgba(0,243,255,0.2); transform: scale(1.05); }
-        .scanner-btn:hover i { text-shadow: 0 0 20px var(--neon-blue); }
-        
-        .scan-laser {
-            position: absolute; top: 10%; left: 10%; width: 80%; height: 3px;
-            background: var(--neon-blue); box-shadow: 0 0 15px 2px var(--neon-blue);
-            animation: scanLaser 1.5s ease-in-out infinite alternate; display: none;
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        .scanner-btn.scanning .scan-laser { display: block; }
-        .scanner-btn.scanning i { opacity: 0.5; }
-        @keyframes scanLaser { 0% { top: 10%; } 100% { top: 90%; } }
 
-        .scan-percentage { font-family: 'Rajdhani'; font-size: 24px; font-weight: bold; color: var(--neon-blue); opacity: 0; transition: 0.3s; }
-        .scanner-btn.scanning .scan-percentage { opacity: 1; }
+        .card-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        .status-msg { margin-top: 30px; font-size: 18px; font-weight: 800; padding: 10px 30px; border-radius: 50px; border: 1px solid transparent; transition: 0.3s;}
-        .status-active { background: rgba(0, 255, 102, 0.1); border-color: var(--neon-green); color: var(--neon-green); text-shadow: 0 0 10px rgba(0,255,102,0.5); }
-        .status-inactive { background: rgba(255, 0, 60, 0.1); border-color: var(--neon-red); color: var(--neon-red); text-shadow: 0 0 10px rgba(255,0,60,0.5); }
+        .form-group { margin-bottom: 15px; }
 
-        /* ================= المطلوبين (WANTED) 3D ================= */
-        .wanted-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            background: #0f0a05;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            direction: rtl;
+        }
+
+        .form-control:focus { border-color: var(--primary); }
+
+        .btn-add {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .btn-add:hover { background: var(--primary-hover); }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .btn-delete { color: var(--danger); }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.2); }
+        .btn-status { color: var(--primary); }
+        .btn-status:hover { background: rgba(255, 123, 0, 0.1); }
+
+        .audio-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 20px;
+            background: rgba(26, 17, 8, 0.9);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--primary-glow);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            transition: 0.3s;
+        }
+
+        .audio-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .auth-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .rank-badge {
+            background: var(--primary);
+            color: #000;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 13px;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .leaders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .leader-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+        .leader-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        .leader-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: rgba(255,123,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 30px;
+        }
+        .leader-title {
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .leader-name {
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .leader-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .rules-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--primary);
+        }
+        .rules-card h3 {
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .rules-card ul {
+            padding-right: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* تصميم كرت التحضير بالبصمة */
+        .fingerprint-box {
+            text-align: center;
+            padding: 30px;
+            background: var(--bg-card);
+            border: 2px dashed var(--primary);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .fingerprint-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 123, 0, 0.1);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .fingerprint-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+            color: #000;
+        }
+        .points-badge {
+            background: linear-gradient(135deg, #ff7b00, #ffae00);
+            color: #000;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        /* تصميم قائمة المطلوبين */
+        .wanted-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
         .wanted-card {
-            background: rgba(10, 0, 5, 0.8); border: 1px solid var(--neon-red);
-            border-radius: 15px; padding: 20px; position: relative; overflow: hidden;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            background: var(--bg-card);
+            border: 2px solid var(--danger);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+            transition: transform 0.3s ease;
         }
-        .wanted-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px rgba(255,0,60,0.3); border-color: #ff4d79; }
-        .wanted-card::before {
-            content: 'WANTED'; position: absolute; top: -10px; right: -10px;
-            font-family: 'Rajdhani'; font-size: 80px; font-weight: 900;
-            color: rgba(255,0,60,0.05); transform: rotate(10deg); pointer-events: none;
+        .wanted-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
         }
-        .wanted-img-box { position: relative; border-radius: 10px; overflow: hidden; margin-bottom: 20px; border: 2px solid var(--neon-red); }
-        .wanted-img-box img { width: 100%; height: 220px; object-fit: cover; filter: contrast(120%) saturate(80%); transition: 0.5s; }
-        .wanted-card:hover .wanted-img-box img { filter: contrast(110%) saturate(120%) scale(1.1); transform: scale(1.05); }
-        .bounty-tag {
-            position: absolute; bottom: 0; left: 0; width: 100%; background: var(--neon-red); color: #fff;
-            text-align: center; padding: 8px; font-family: 'Rajdhani'; font-weight: bold; font-size: 18px;
+        .wanted-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--danger);
         }
-        .wanted-name { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 5px; }
-        .wanted-crime { color: var(--text-muted); font-size: 13px; line-height: 1.6; }
-
-        /* إدخال البيانات */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 10px; color: var(--neon-purple); font-size: 13px; font-weight: 700; }
-        .cyber-input {
-            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px; border-radius: 10px; color: #fff; font-size: 15px; transition: 0.3s;
+        .wanted-header {
+            background: var(--danger);
+            color: #fff;
+            text-align: center;
+            font-weight: 900;
+            font-size: 16px;
+            padding: 6px;
+            letter-spacing: 2px;
         }
-        .cyber-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.2); outline: none; }
+        .wanted-body {
+            padding: 15px;
+        }
+        .wanted-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .wanted-info {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .wanted-danger-level {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--warning);
+        }
     </style>
 </head>
 <body>
 
-    <!-- الخلفية المتحركة -->
-    <div class="grid-bg"></div>
-    <div class="grid-glow"></div>
+    <audio id="bgMusic" loop src="music.mp3"></audio>
 
-    <!-- 1. شاشة الإقلاع (Boot Screen) -->
-    <div id="boot-screen">
-        <div id="boot-text-container" class="boot-text"></div>
-        <div class="cursor"></div>
-    </div>
+    <button class="audio-btn" id="audioToggle" onclick="toggleAudio()">
+        <span id="audioIcon">🔈</span>
+        <span id="audioText">تشغيل الصوت</span>
+    </button>
 
-    <!-- 2. بوابة الدخول الزجاجية -->
-    <div id="login-gateway">
-        <div class="login-card" id="login-card-elem">
-            <div class="glow-circle"></div>
-            <i class="fa-solid fa-shield-cat" style="font-size: 60px; color: var(--neon-blue);"></i>
-            <h1 class="login-title">L.S.P.D SYSTEM</h1>
-            <p class="login-subtitle">SECURE HOLOGRAPHIC TERMINAL v2.0</p>
-            
-            <div id="login-main-btns">
-                <button class="btn-holo" onclick="simulateLogin('discord')">
-                    <i class="fa-brands fa-discord"></i> الاتصال العسكري (Discord)
-                </button>
-                <button class="btn-holo danger" onclick="toggleAdminPanel()">
-                    <i class="fa-solid fa-fingerprint"></i> تصريح القيادة العليا
-                </button>
-            </div>
-
-            <div id="admin-login-div" style="display: none; margin-top: 20px;">
-                <input type="password" id="admin-pin" class="admin-input" placeholder="PASSCODE" maxlength="4">
-                <button class="btn-holo danger" onclick="simulateLogin('admin')">VERIFY ACCESS</button>
-                <button class="btn-holo" style="border-color: #444; color: #888;" onclick="toggleAdminPanel()">CANCEL</button>
+    <div id="authOverlay" class="auth-overlay">
+        <div class="auth-card">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">🔒 دخول القيادات والمسؤولين</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">ادخل الرمز السري للتحكم بالنظام وإدارة الكادر:</p>
+            <input type="password" id="adminPasswordInput" class="form-control" placeholder="رمز الدخول..." style="margin-bottom: 15px; text-align: center; font-size: 18px;">
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-add" style="margin-bottom:0;" onclick="checkAdminAuth()">دخول</button>
+                <button class="btn-add" style="background: var(--border-color); color: #fff; margin-bottom:0;" onclick="closeAuthModal()">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <!-- 3. التطبيق الرئيسي -->
-    <div id="app-wrapper">
-        
-        <!-- القائمة الجانبية -->
-        <aside class="sidebar">
-            <div class="brand">
-                <h1>LSPD</h1>
-                <span>COMMAND CENTER</span>
+    <header class="header">
+        <div class="nav-top">
+            <div class="logo">
+                <img src="https://cdn.discordapp.com/embed/avatars/0.png" id="mainBadgeLogo" alt="Logo"> 
+                 LordTown | LSPD
             </div>
             
-            <div class="menu-category">MAIN TERMINAL</div>
-            <button class="nav-btn active" onclick="openTab(event, 'tab-dashboard')">
-                <i class="fa-solid fa-chart-line"></i> لوحة التحكم
-            </button>
-            
-            <div class="menu-category">OPERATIONS</div>
-            <button class="nav-btn" onclick="openTab(event, 'tab-scanner')">
-                <i class="fa-solid fa-microchip"></i> نظام التحضير الذكي
-            </button>
-            <button class="nav-btn" onclick="openTab(event, 'tab-wanted')">
-                <i class="fa-solid fa-crosshairs"></i> المطلوبين أمنياً
-            </button>
-            
-            <div class="menu-category">DATABASE</div>
-            <button class="nav-btn" onclick="openTab(event, 'tab-profile')">
-                <i class="fa-solid fa-user-astronaut"></i> هويتي العسكرية
-            </button>
-            <button class="nav-btn" onclick="openTab(event, 'tab-officers')">
-                <i class="fa-solid fa-users-rays"></i> القوة العسكرية
-            </button>
-
-            <div id="admin-menu-section" style="display: none;">
-                <div class="menu-category" style="color: var(--neon-red);">RESTRICTED AREA</div>
-                <button class="nav-btn" onclick="openTab(event, 'tab-admin')" style="color: var(--neon-red);">
-                    <i class="fa-solid fa-skull"></i> غرفة القيادة
-                </button>
+            <div id="userHeaderBox" class="user-header-profile" style="display: none;">
+                <span id="logoutBtn" class="logout-link" onclick="logoutDiscord()">خروج</span>
+                <span id="headerUserName" class="user-header-name">زائر</span>
+                <img id="headerAvatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar">
             </div>
-        </aside>
 
-        <!-- منطقة المحتوى -->
-        <main class="main-area">
-            
-            <header class="top-bar">
-                <div class="time-box" id="clock-display">00:00:00</div>
-                
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <i class="fa-solid fa-power-off logout-icon" onclick="location.reload()" title="إنهاء الجلسة"></i>
-                    <div class="user-chip">
-                        <div class="user-chip-info">
-                            <div class="user-chip-name" id="ui-username">GUEST_USER</div>
-                            <div class="user-chip-role" id="ui-role">UNAUTHORIZED</div>
-                        </div>
-                        <img src="https://i.pravatar.cc/100" id="ui-avatar">
-                    </div>
+            <button id="mainDiscordLoginBtn" class="btn-discord-login" onclick="loginWithDiscord()">
+                دخول Discord
+            </button>
+        </div>
+
+        <div class="nav-links">
+            <button class="active" onclick="openTab(event, 'home')">الرئيسية</button>
+            <button onclick="openTab(event, 'wanted')">⚠️ قائمة المطلوبين</button>
+            <button onclick="openTab(event, 'attendance')">👈 جهاز التحضير (البصمة)</button>
+            <button onclick="openTab(event, 'stateLeaders')">قيادات الدولة</button>
+            <button onclick="openTab(event, 'profile')">ملف الضابط</button>
+            <button onclick="openTab(event, 'equipment')">الأسلحة والمركبات</button>
+            <button onclick="openTab(event, 'roster')">جدول التوزيع</button>
+            <button onclick="openTab(event, 'reports')">🚨 البلاغات والمخالفات</button>
+            <button onclick="openTab(event, 'rules')">📜 القوانين والتعليمات</button>
+            <button onclick="openTab(event, 'requests')">تقديم الإجازات</button>
+            <button onclick="openTab(event, 'soldiers')">القائمة العسكرية</button>
+            <button onclick="requestAdminAccess(event)">⚡ لوحة القيادات</button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- 1. الرئيسية -->
+        <div id="home" class="tab-content active">
+            <div class="hero-card">
+                <h1>LordTown | LSPD</h1>
+                <p>السيادة • النظام • الولاء — نظام عسكري إلكتروني موحد للقيادة والسيطرة الميدانية.</p>
+                <div class="tags">
+                    <span>LSPD Police</span>
+                    <span>الخوادم الرسمية</span>
+                    <span>إدارة القيادة العليا</span>
                 </div>
-            </header>
+            </div>
 
-            <div class="content-container">
-                
-                <!-- لوحة التحكم -->
-                <div id="tab-dashboard" class="tab-panel active">
-                    <h2 class="page-title"><i class="fa-solid fa-globe"></i> المركز الإحصائي الميداني</h2>
-                    
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <div><div class="stat-val" id="stat-total">0</div><div class="stat-label">إجمالي القوة</div></div>
-                            <i class="fa-solid fa-users stat-icon"></i>
-                        </div>
-                        <div class="stat-box" style="border-left-color: var(--neon-green);">
-                            <div><div class="stat-val" id="stat-active" style="color: var(--neon-green);">0</div><div class="stat-label">عساكر بالخدمة</div></div>
-                            <i class="fa-solid fa-satellite stat-icon" style="color: var(--neon-green);"></i>
-                        </div>
-                        <div class="stat-box" style="border-left-color: var(--neon-red);">
-                            <div><div class="stat-val" id="stat-wanted" style="color: var(--neon-red);">0</div><div class="stat-label">قائمة الخطر</div></div>
-                            <i class="fa-solid fa-radiation stat-icon" style="color: var(--neon-red);"></i>
-                        </div>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="number" id="homeTotalOfficers">0</div>
+                    <div class="label">إجمالي القوة المسجلة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" style="color: var(--success);" id="homeActiveOfficers">0</div>
+                    <div class="label">على رأس العمل</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" style="color: var(--danger);" id="homeTotalWanted">0</div>
+                    <div class="label">المطلوبين أمنياً</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" style="color: var(--warning);" id="homeLeaveOfficers">0</div>
+                    <div class="label">في إجازة رسمية</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="homeTotalRequests">0</div>
+                    <div class="label">طلبات الإجازة المعلقة</div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="panel-card">
-                        <h3 style="margin-bottom: 20px; color: var(--neon-blue);"><i class="fa-solid fa-list-ul"></i> السجل الميداني الحديث</h3>
+        <!-- 2. قائمة المطلوبين -->
+        <div id="wanted" class="tab-content">
+            <h2 class="section-title">⚠️ قائمة المطلوبين أمنياً للدولة (WANTED LIST)</h2>
+            <div class="wanted-grid" id="publicWantedGrid"></div>
+        </div>
+
+        <!-- 3. نظام البصمة والتحضير والنقاط -->
+        <div id="attendance" class="tab-content">
+            <h2 class="section-title">☝️ نظام التبصيم والتحضير الميداني الآلي</h2>
+            
+            <div class="fingerprint-box">
+                <div class="fingerprint-btn" onclick="toggleAttendance()">👇</div>
+                <h3 id="attendanceStatusText" style="color: var(--text-light); margin-bottom: 8px;">اضغط على البصمة لتسجيل الدخول / الخروج</h3>
+                <p style="color: var(--text-muted); font-size: 13px;">ملاحظة: تسجيل الدخول يمنحك <strong>+10 نقاط</strong> والخروج يمنحك <strong>+5 نقاط</strong> تحضيرية.</p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">📜 سجل التحضيرات الميدانية الأخيرة</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم الضابط</th>
+                                <th>نوع الإجراء</th>
+                                <th>الوقت والتاريخ</th>
+                                <th>النقاط المكتسبة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="publicAttendanceTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. قيادات الدولة -->
+        <div id="stateLeaders" class="tab-content">
+            <h2 class="section-title">قيادات دولة Lord Town العليا</h2>
+            <div class="leaders-grid" id="publicLeadersGrid"></div>
+        </div>
+
+        <!-- 5. ملف الضابط -->
+        <div id="profile" class="tab-content">
+            <h2 class="section-title">🪪 ملف الضابط الشخصي</h2>
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <div class="form-group">
+                    <label>الاسم في السيرفر (Discord Name):</label>
+                    <input type="text" id="policeName" class="form-control" readonly placeholder="يرجى تسجيل الدخول عبر Discord..." style="color: var(--primary); font-weight: bold;">
+                </div>
+                <div class="form-group">
+                    <label>النقاط التراكمية الحالية:</label>
+                    <input type="text" id="officerPointsDisplay" class="form-control" readonly placeholder="0 نقطة" style="color: var(--success); font-weight: bold;">
+                </div>
+                <div class="form-group">
+                    <label>الرتبة العسكرية المسجلة:</label>
+                    <input type="text" id="rankName" class="form-control" readonly placeholder="في انتظار تعيين القيادة..." style="color: var(--primary); font-weight: bold;">
+                </div>
+                <div class="form-group">
+                    <label>الباج العسكري المخصص (Badge):</label>
+                    <input type="text" id="rankLevel" class="form-control" readonly placeholder="في انتظار تخصيص باج من القيادة..." style="color: var(--primary); font-weight: bold;">
+                </div>
+                <div class="form-group">
+                    <label>الوحدة / الفرقة الميدانية:</label>
+                    <input type="text" id="deptName" class="form-control" readonly placeholder="في انتظار التوزيع من القيادة..." style="color: var(--primary); font-weight: bold;">
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. الأسلحة والمركبات -->
+        <div id="equipment" class="tab-content">
+            <h2 class="section-title">🛡️ قائمة الأسلحة والمركبات المعتمدة رسمياً</h2>
+            <div class="equipment-grid">
+                <div class="card">
+                    <h3 class="card-title">🔫 الأسلحة المصرحة لقطاع الشرطة</h3>
+                    <div class="table-container">
                         <table>
-                            <thead><tr><th>الضابط</th><th>نوع العملية</th><th>التوقيت</th></tr></thead>
-                            <tbody id="logs-table"></tbody>
+                            <thead>
+                                <tr>
+                                    <th>اسم السلاح / التجهيز</th>
+                                    <th>الرتبة / الفرقة المسموحة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="publicWeaponsTable"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- التحضير الذكي -->
-                <div id="tab-scanner" class="tab-panel">
-                    <h2 class="page-title"><i class="fa-solid fa-fingerprint"></i> محطة البصمة البيومترية</h2>
-                    
-                    <div class="panel-card scanner-wrapper">
-                        <p style="color: var(--text-muted); margin-bottom: 30px;">انقر على المعالج لبدء فحص الهوية وتسجيل الحالة</p>
-                        
-                        <div class="scanner-btn" id="biometric-btn" onclick="startScan()">
-                            <i class="fa-solid fa-fingerprint"></i>
-                            <div class="scan-laser"></div>
-                            <div class="scan-percentage" id="scan-pct">0%</div>
-                        </div>
-
-                        <div id="user-status-display" class="status-msg status-inactive">
-                            الحالة الحالية: غير متصل بالخدمة
-                        </div>
-                    </div>
-                </div>
-
-                <!-- المطلوبين -->
-                <div id="tab-wanted" class="tab-panel">
-                    <h2 class="page-title"><i class="fa-solid fa-crosshairs" style="color: var(--neon-red);"></i> القائمة السوداء (WANTED)</h2>
-                    <div class="wanted-grid" id="wanted-render-area"></div>
-                </div>
-
-                <!-- الملف الشخصي -->
-                <div id="tab-profile" class="tab-panel">
-                    <h2 class="page-title"><i class="fa-solid fa-user-astronaut"></i> الهوية العسكرية المشفرة</h2>
-                    <div class="panel-card" style="max-width: 600px; margin: 0 auto; text-align: center;">
-                        <img src="" id="prof-img" style="width: 120px; height: 120px; border-radius: 20px; border: 2px solid var(--neon-blue); margin-bottom: 20px;">
-                        <div class="input-group"><label>الاسم العسكري</label><input type="text" id="prof-name" class="cyber-input" readonly></div>
-                        <div style="display: flex; gap: 20px;">
-                            <div class="input-group" style="flex:1;"><label>الرتبة</label><input type="text" id="prof-rank" class="cyber-input" readonly></div>
-                            <div class="input-group" style="flex:1;"><label>رقم الباج</label><input type="text" id="prof-badge" class="cyber-input" readonly></div>
-                        </div>
-                        <div class="input-group"><label>إجمالي نقاط التقييم</label><input type="text" id="prof-pts" class="cyber-input" style="color: var(--neon-green); font-weight: bold; font-family: 'Rajdhani'; font-size: 24px; text-align: center;" readonly></div>
-                    </div>
-                </div>
-
-                <!-- القوة العسكرية -->
-                <div id="tab-officers" class="tab-panel">
-                    <h2 class="page-title"><i class="fa-solid fa-users-rays"></i> قاعدة بيانات الضباط</h2>
-                    <div class="panel-card">
+                <div class="card">
+                    <h3 class="card-title">🚔 المركبات الميدانية المصرحة</h3>
+                    <div class="table-container">
                         <table>
-                            <thead><tr><th>الباج</th><th>الاسم</th><th>الرتبة</th><th>النقاط</th><th>الحالة</th></tr></thead>
-                            <tbody id="officers-table-body"></tbody>
+                            <thead>
+                                <tr>
+                                    <th>نوع المركبة / الدورية</th>
+                                    <th>القطاع / الاستخدام</th>
+                                </tr>
+                            </thead>
+                            <tbody id="publicVehiclesTable"></tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- غرفة القيادة (Admin) -->
-                <div id="tab-admin" class="tab-panel">
-                    <h2 class="page-title" style="color: var(--neon-red);"><i class="fa-solid fa-skull"></i> لوحة التحكم المركزية للقيادة</h2>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                        <div class="panel-card" style="border-color: rgba(255,0,60,0.3);">
-                            <h3 style="color: var(--neon-red); margin-bottom: 20px;">إضافة مطلوب أمني</h3>
-                            <div class="input-group"><input type="text" id="add-w-name" class="cyber-input" placeholder="اسم الهدف"></div>
-                            <div class="input-group"><input type="text" id="add-w-crime" class="cyber-input" placeholder="التهمة / الجريمة"></div>
-                            <div class="input-group"><input type="text" id="add-w-bounty" class="cyber-input" placeholder="المكافأة (مثال: $10,000)"></div>
-                            <div class="input-group"><input type="text" id="add-w-img" class="cyber-input" placeholder="رابط صورة الهدف (URL)"></div>
-                            <button class="btn-holo danger" onclick="adminAddWanted()">تعميم الهدف</button>
-                        </div>
-                        
-                        <div class="panel-card" style="border-color: rgba(0,243,255,0.3);">
-                            <h3 style="color: var(--neon-blue); margin-bottom: 20px;">تسجيل/ترقية ضابط</h3>
-                            <div class="input-group"><input type="text" id="add-o-name" class="cyber-input" placeholder="الاسم (مطابق لديسكورد)"></div>
-                            <div class="input-group"><input type="text" id="add-o-badge" class="cyber-input" placeholder="رقم الباج"></div>
-                            <div class="input-group">
-                                <select id="add-o-rank" class="cyber-input">
-                                    <option>جندي</option><option>عريف</option><option>رقيب</option><option>ملازم</option><option>نقيب</option><option>عقيد</option><option>لواء</option>
-                                </select>
-                            </div>
-                            <button class="btn-holo" onclick="adminAddOfficer()">تحديث بيانات الضابط</button>
-                        </div>
+        <!-- 7. جدول التوزيع -->
+        <div id="roster" class="tab-content">
+            <h2 class="section-title">🗺️ جدول توزيع القطاعات</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>القطاع / المنطقة</th>
+                            <th>وحدة الدورية</th>
+                            <th>المسؤول الميداني</th>
+                            <th>الحالة الميدانية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>وسط المدينة (Downtown)</td>
+                            <td>دورية عامة Alpha</td>
+                            <td>رائد / مشعل بن رائد</td>
+                            <td><span class="badge badge-active">نشط - تغطية شاملة</span></td>
+                        </tr>
+                        <tr>
+                            <td>التدخل السريع (Highways)</td>
+                            <td>المهام الخاصة Bravo</td>
+                            <td>رقيب أول / علي بن محمد</td>
+                            <td><span class="badge badge-active">نشط - نقاط تفتيش</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 8. البلاغات والمخالفات -->
+        <div id="reports" class="tab-content">
+            <h2 class="section-title">🚨 نظام تسجيل البلاغات والمخالفات الميدانية</h2>
+            <div class="admin-grid">
+                <div class="card">
+                    <h3 class="card-title">تسجيل بلاغ / مخالفة جديدة</h3>
+                    <div class="form-group">
+                        <label>اسم الضابط المحرر:</label>
+                        <input type="text" id="reportOfficer" class="form-control" readonly placeholder="سجل الدخول بـ Discord...">
                     </div>
+                    <div class="form-group">
+                        <label>اسم المشتبه به / المخالف:</label>
+                        <input type="text" id="reportTarget" class="form-control" placeholder="اسم الشخص أو المجموعات...">
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الإجراء:</label>
+                        <select id="reportType" class="form-control">
+                            <option value="مخالفة مرورية">مخالفة مرورية</option>
+                            <option value="بلاغ جنائي">بلاغ جنائي / جريمة</option>
+                            <option value="توقيف / حجز">توقيف / حجز مركبة</option>
+                            <option value="مداهمة ميدانية">مداهمة ميدانية</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>تفاصيل البلاغ / الغرامة:</label>
+                        <textarea id="reportDetails" class="form-control" rows="3" placeholder="تفاصيل الحادثة أو قيمة المخالفة..."></textarea>
+                    </div>
+                    <button class="btn-add" style="background: var(--danger); color: #fff;" onclick="submitReport()">إرسال البلاغ للقيادة</button>
                 </div>
 
+                <div class="card">
+                    <h3 class="card-title">📋 سجل البلاغات والمخالفات الميدانية</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>المحرر</th>
+                                    <th>المخالف / الهدف</th>
+                                    <th>النوع والتفاصيل</th>
+                                </tr>
+                            </thead>
+                            <tbody id="publicReportsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
+        </div>
+
+        <!-- 9. القوانين والتعليمات -->
+        <div id="rules" class="tab-content">
+            <h2 class="section-title">📜 اللائحة والقوانين العسكرية الموحدة</h2>
+            <div class="rules-card">
+                <h3>1. الانضباط والتعامل الميداني</h3>
+                <ul>
+                    <li>الالتزام التام بجميع الأوامر الصادرة من القيادات العليا والسلسلة الرتبية.</li>
+                    <li>يُمنع ارتداء الزي العسكري أو تجول الدوريات خارج ساعات الدوام الرسمية.</li>
+                    <li>احترام المواطنين والتعامل بمهنية عالية في جميع المواقف الميدانية.</li>
+                </ul>
+            </div>
+            <div class="rules-card">
+                <h3>2. بروتوكول استخدام السلاح والمطاردات</h3>
+                <ul>
+                    <li>يُمنع استخدام السلاح الحي إلا في حالات التهديد المباشر للحياة أو بأمر قيادي.</li>
+                    <li>المطاردات الميدانية تتطلب التنسيق عبر اللاسلكي وتحديد الموقع بشكل دائم.</li>
+                    <li>استخدام التيسر (Taser) يكون في حالات عدم الاستجابة أو محاولة الهرب بالقدم.</li>
+                </ul>
+            </div>
+            <div class="rules-card">
+                <h3>3. العقوبات والمخالفات الإدارية</h3>
+                <ul>
+                    <li>التغيب عن الاستلام بدون إجازة رسمية يعرض العسكري للإنذار أو التوقيف.</li>
+                    <li>مخالفة الأوامر المباشرة تؤدي إلى سحب الباج العسكري والتخفيض الرتبي.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 10. تقديم الإجازات -->
+        <div id="requests" class="tab-content">
+            <h2 class="section-title">📝 تقديم طلب إجازة رسمية</h2>
+            <div class="admin-grid">
+                <div class="card">
+                    <h3 class="card-title">تقديم إجازة جديدة</h3>
+                    <div class="form-group">
+                        <label>اسم العسكري (تلقائي حسب الدخول):</label>
+                        <input type="text" id="reqName" class="form-control" readonly placeholder="سجل الدخول بـ Discord لتعبئة الاسم تلقائياً...">
+                    </div>
+                    <div class="form-group">
+                        <label>أسباب ومُدة الإجازة المطلوبة:</label>
+                        <textarea id="reqReason" class="form-control" rows="4" placeholder="اكتب مبررات الطلب وعدد الأيام المطلوبة..."></textarea>
+                    </div>
+                    <button class="btn-add" onclick="submitRequest()">إرسال طلب الإجازة للقيادة</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">📋 سجل حالة طلبي للإجازة</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اسم العسكري</th>
+                                    <th>سبب الإجازة</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="publicRequestsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. القائمة العسكرية العامة -->
+        <div id="soldiers" class="tab-content">
+            <h2 class="section-title">🎖️ القائمة العامة للعساكر والباجات والنقاط</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الباج العسكري</th>
+                            <th>اسم العسكري</th>
+                            <th>الرتبة</th>
+                            <th>الفرقة / الوحدة</th>
+                            <th>مجموع النقاط</th>
+                            <th>الحالة الحالية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="publicOfficersTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 12. لوحة القيادات -->
+        <div id="admin" class="tab-content">
+            <h2 class="section-title">🛡️ لوحة القيادة والسيطرة</h2>
+
+            <div class="admin-grid">
+
+                <!-- إضافة وتعديل قائمة المطلوبين -->
+                <div class="card" style="border-color: var(--danger);">
+                    <h3 class="card-title" style="color: var(--danger);">⚠️ إضافة مطلوب جديد للقائمة</h3>
+                    <div class="form-group">
+                        <label>اسم المطلوب:</label>
+                        <input type="text" id="wantedName" class="form-control" placeholder="اسم المطلوب الكامل...">
+                    </div>
+                    <div class="form-group">
+                        <label>معلومات وتفاصيل الجرم / السبب:</label>
+                        <textarea id="wantedInfo" class="form-control" rows="2" placeholder="الجرائم والمخالفات المرتكبة..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>رابط الصورة الشخصية (Image URL):</label>
+                        <input type="text" id="wantedImg" class="form-control" placeholder="https://example.com/photo.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>المكافأة / درجة الخطورة:</label>
+                        <input type="text" id="wantedReward" class="form-control" placeholder="مثال: $50,000 أو خطير جداً">
+                    </div>
+                    <button class="btn-add" style="background: var(--danger); color: #fff;" onclick="addWantedByAdmin()">إضافة المطلوب فوراً</button>
+                </div>
+
+                <!-- مكافأة أو خصم النقاط من القيادة -->
+                <div class="card">
+                    <h3 class="card-title">⭐ التحكم في نقاط العساكر (إضافة/خصم)</h3>
+                    <div class="form-group">
+                        <label>اختر العسكري:</label>
+                        <select id="adminOfficerSelect" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>عدد النقاط (استخدم علامة - للخصم):</label>
+                        <input type="number" id="adminPointsAmount" class="form-control" placeholder="مثال: 15 أو -10">
+                    </div>
+                    <button class="btn-add" style="background:var(--success); color:#000;" onclick="addPointsByAdmin()">تحديث النقاط</button>
+                </div>
+
+                <!-- إضافة عسكري جديد -->
+                <div class="card">
+                    <h3 class="card-title">🎖️ إضافة / تعديل بيانات عسكري</h3>
+                    <div class="form-group">
+                        <label>الاسم (Discord Name):</label>
+                        <input type="text" id="officerName" class="form-control" placeholder="مثال: Sultan_LSPD">
+                    </div>
+                    <div class="form-group">
+                        <label>الباج العسكري (Badge):</label>
+                        <input type="text" id="badgeNumber" class="form-control" placeholder="مثال: U-20 أو 502">
+                    </div>
+                    <div class="form-group">
+                        <label>الرتبة العسكرية:</label>
+                        <select id="officerRank" class="form-control">
+                            <option value="جندي">جندي</option>
+                            <option value="جندي أول">جندي أول</option>
+                            <option value="عريف">عريف</option>
+                            <option value="وكيل رقيب">وكيل رقيب</option>
+                            <option value="رقيب">رقيب</option>
+                            <option value="رقيب أول">رقيب أول</option>
+                            <option value="رئيس رقباء">رئيس رقباء</option>
+                            <option value="ملازم">ملازم</option>
+                            <option value="ملازم أول">ملازم أول</option>
+                            <option value="نقيب">نقيب</option>
+                            <option value="رائد">رائد</option>
+                            <option value="مقدم">مقدم</option>
+                            <option value="عقيد">عقيد</option>
+                            <option value="عميد">عميد</option>
+                            <option value="لواء">لواء</option>
+                            <option value="فريق">فريق</option>
+                            <option value="فريق أول">فريق أول</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الوحدة / الفرقة الميدانية:</label>
+                        <select id="department" class="form-control">
+                            <option value="دورية عامة">دورية عامة</option>
+                            <option value="دعم وإسناد">دعم وإسناد</option>
+                            <option value="المهام الخاصة SWAT">المهام الخاصة SWAT</option>
+                            <option value="المباحث والجنايات">المباحث والجنايات</option>
+                        </select>
+                    </div>
+                    <button class="btn-add" onclick="addOfficerByAdmin()">اعتماد العسكري</button>
+                </div>
+
+                <!-- إضافة قيادي للدولة -->
+                <div class="card">
+                    <h3 class="card-title">👑 إدارة قائمة قيادات الدولة</h3>
+                    <div class="form-group">
+                        <input type="text" id="newLeaderName" class="form-control" placeholder="اسم القائد">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="newLeaderTitle" class="form-control" placeholder="المنصب">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="newLeaderDesc" class="form-control" rows="2" placeholder="نبذة مختصرة..."></textarea>
+                    </div>
+                    <button class="btn-add" style="background:#f59e0b; color:#000;" onclick="addLeader()">إضافة للقائمة الرسمية</button>
+                </div>
+
+                <!-- إدارة الأسلحة والسيارات -->
+                <div class="card">
+                    <h3 class="card-title">🔫 إدارة الأسلحة المصرحة</h3>
+                    <div class="form-group"><input type="text" id="newWeaponName" class="form-control" placeholder="اسم السلاح"></div>
+                    <div class="form-group"><input type="text" id="newWeaponRank" class="form-control" placeholder="الصلاحية"></div>
+                    <button class="btn-add" style="background:#10b981; color:#fff;" onclick="addWeapon()">إضافة سلاح</button>
+                </div>
+
+                <!-- طلبات الإجازات المعلقة -->
+                <div class="card">
+                    <h3 class="card-title">📬 إدارة طلبات الإجازات</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>العسكري والسبب</th>
+                                    <th>إجراء القيادة</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminRequestsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة المطلوبين أمنياً من القيادة -->
+            <div class="card" style="border-color: var(--danger);">
+                <h3 class="card-title" style="color:var(--danger);">⚠️ إدارة قائمة المطلوبين أمنياً (حذف / تعديل)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الصورة</th>
+                                <th>الاسم</th>
+                                <th>المعومات والجرم</th>
+                                <th>المكافأة / درجة الخطورة</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminWantedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- سجل العساكر وإدارتهم -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;">
+                    <h3 class="card-title" style="margin:0;">👥 سجل العساكر والنقاط والتحكم بالحالة</h3>
+                    <input type="text" id="searchInput" class="form-control" style="width: 200px;" placeholder="بحث..." onkeyup="filterOfficers()">
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الباج</th>
+                                <th>الاسم</th>
+                                <th>الرتبة</th>
+                                <th>النقاط</th>
+                                <th>الحالة</th>
+                                <th>التحكم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOfficersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // ================= البيانات المحلية =================
-        let officers = JSON.parse(localStorage.getItem('v2_officers')) || [];
-        let wantedList = JSON.parse(localStorage.getItem('v2_wanted')) || [
-            { name: "John Doe", crime: "السطو على البنك المركزي وإطلاق نار على الدوريات", bounty: "$150,000", img: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=400" }
+        const API_BASE = "https://03gqislej5.apps.bot-hosting.cloud";
+        const ADMIN_PASSWORD = "LSPD1234";
+        let isAdminLoggedIn = false;
+        let currentUserData = null;
+
+        function loginWithDiscord() { window.location.href = `${API_BASE}/api/auth/login`; }
+        function logoutDiscord() { window.location.href = window.location.pathname; }
+
+        function openTab(evt, tabName) {
+            let tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+            let tablinks = document.querySelectorAll(".nav-links button");
+            for (let i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+            document.getElementById(tabName).classList.add("active");
+            if (evt) evt.currentTarget.classList.add("active");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function requestAdminAccess(evt) {
+            if (isAdminLoggedIn) openTab(evt, 'admin');
+            else {
+                document.getElementById('authOverlay').style.display = 'flex';
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        function checkAdminAuth() {
+            if (document.getElementById('adminPasswordInput').value === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('authOverlay').style.display = 'none';
+                openTab(null, 'admin');
+            } else {
+                alert('⚠️ الرمز السري غير صحيح!');
+                document.getElementById('adminPasswordInput').value = '';
+            }
+        }
+
+        function closeAuthModal() { document.getElementById('authOverlay').style.display = 'none'; }
+
+        const audio = document.getElementById('bgMusic');
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    document.getElementById('audioIcon').textContent = '🔊';
+                    document.getElementById('audioText').textContent = 'إيقاف الصوت';
+                }).catch(err => console.log(err));
+            } else {
+                audio.pause();
+                document.getElementById('audioIcon').textContent = '🔈';
+                document.getElementById('audioText').textContent = 'تشغيل الصوت';
+            }
+        }
+
+        // البيانات المخزنة LocalStorage
+        let officers = JSON.parse(localStorage.getItem('lspd_officers')) || [];
+        let requests = JSON.parse(localStorage.getItem('lspd_requests')) || [];
+        let reports = JSON.parse(localStorage.getItem('lspd_reports')) || [];
+        let attendanceLogs = JSON.parse(localStorage.getItem('lspd_attendance')) || [];
+        let wantedList = JSON.parse(localStorage.getItem('lspd_wanted')) || [
+            { id: 1, name: "مايكل تايلور", info: "سطو مسلح على البنك المركز والتعدي على رجال الأمن.", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500", reward: "خطير جداً - $100,000" }
         ];
-        let logs = JSON.parse(localStorage.getItem('v2_logs')) || [];
-        
-        let currentUser = null;
-        let isAdmin = false;
-        let isScanning = false;
+        let leadersList = JSON.parse(localStorage.getItem('lspd_leaders')) || [
+            { id: 1, name: "LordTown", title: "حاكم الدولة", desc: "المسؤول الأعلى عن إدارة شؤون الدولة وسيادتها." }
+        ];
+        let weaponsList = JSON.parse(localStorage.getItem('lspd_weapons')) || [
+            { id: 1, name: "Combat Pistol", rank: "جميع الرتب" }
+        ];
+        let vehiclesList = JSON.parse(localStorage.getItem('lspd_vehicles')) || [
+            { id: 1, name: "Vapid Stanier Cruiser", dept: "دورية عامة" }
+        ];
 
         function saveData() {
-            localStorage.setItem('v2_officers', JSON.stringify(officers));
-            localStorage.setItem('v2_wanted', JSON.stringify(wantedList));
-            localStorage.setItem('v2_logs', JSON.stringify(logs));
-            updateDashboardUI();
+            localStorage.setItem('lspd_officers', JSON.stringify(officers));
+            localStorage.setItem('lspd_requests', JSON.stringify(requests));
+            localStorage.setItem('lspd_reports', JSON.stringify(reports));
+            localStorage.setItem('lspd_attendance', JSON.stringify(attendanceLogs));
+            localStorage.setItem('lspd_wanted', JSON.stringify(wantedList));
+            localStorage.setItem('lspd_weapons', JSON.stringify(weaponsList));
+            localStorage.setItem('lspd_vehicles', JSON.stringify(vehiclesList));
+            localStorage.setItem('lspd_leaders', JSON.stringify(leadersList));
+            renderAll();
         }
 
-        // ================= شاشة الإقلاع (Boot Sequence) =================
-        const bootLines = [
-            "INITIALIZING KERNEL...",
-            "CONNECTING TO SECURE SERVER [LSPD-MAIN]...",
-            "DECRYPTING DATABASE...",
-            "BYPASSING FIREWALLS... SUCCESS",
-            "LOADING HOLOGRAPHIC UI..."
-        ];
-        
-        let lineIndex = 0;
-        const bootContainer = document.getElementById('boot-text-container');
-        
-        function typeBootSequence() {
-            if(lineIndex < bootLines.length) {
-                bootContainer.innerHTML += `<div>> ${bootLines[lineIndex]}</div>`;
-                lineIndex++;
-                setTimeout(typeBootSequence, 400 + Math.random() * 400);
-            } else {
-                setTimeout(() => {
-                    document.getElementById('boot-screen').style.display = 'none';
-                    document.getElementById('login-gateway').style.display = 'flex';
-                    setTimeout(() => {
-                        document.getElementById('login-gateway').style.opacity = '1';
-                        document.getElementById('login-card-elem').classList.add('show');
-                    }, 100);
-                }, 800);
+        // إضافة مطلوب أمنياً من اللوحة
+        function addWantedByAdmin() {
+            const name = document.getElementById('wantedName').value.trim();
+            const info = document.getElementById('wantedInfo').value.trim();
+            let img = document.getElementById('wantedImg').value.trim();
+            const reward = document.getElementById('wantedReward').value.trim();
+
+            if (!name || !info) return alert("يرجى كتابة اسم المطلوب والمعلومات الأساسية عنه!");
+
+            if (!img) {
+                img = "https://cdn.discordapp.com/embed/avatars/0.png";
             }
-        }
-        
-        window.onload = typeBootSequence;
 
-        // ================= تسجيل الدخول =================
-        function toggleAdminPanel() {
-            const adminDiv = document.getElementById('admin-login-div');
-            const mainBtns = document.getElementById('login-main-btns');
-            if(adminDiv.style.display === 'none') {
-                adminDiv.style.display = 'block'; mainBtns.style.display = 'none';
-            } else {
-                adminDiv.style.display = 'none'; mainBtns.style.display = 'block';
-            }
-        }
+            wantedList.push({
+                id: Date.now(),
+                name: name,
+                info: info,
+                img: img,
+                reward: reward || "مطلوب فوراً"
+            });
 
-        function simulateLogin(type) {
-            document.getElementById('login-card-elem').innerHTML = `<h2 style="color:var(--neon-blue); margin-top:50px;">AUTHENTICATING...</h2><div style="margin: 30px auto; width: 40px; height: 40px; border: 3px solid transparent; border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite;"></div>`;
-            
-            setTimeout(() => {
-                if(type === 'discord') {
-                    currentUser = { name: "Officer_Ghost", avatar: "https://i.pravatar.cc/150?img=11" };
-                    isAdmin = false;
-                    completeLogin();
-                } else {
-                    const pin = document.getElementById('admin-pin').value;
-                    if(pin === '0000' || pin === 'LSPD') { // رمز الإدمن
-                        currentUser = { name: "COMMANDER", avatar: "https://i.pravatar.cc/150?img=60" };
-                        isAdmin = true;
-                        completeLogin();
-                    } else {
-                        alert("ACCESS DENIED");
-                        location.reload();
-                    }
-                }
-            }, 1500);
+            saveData();
+            document.getElementById('wantedName').value = '';
+            document.getElementById('wantedInfo').value = '';
+            document.getElementById('wantedImg').value = '';
+            document.getElementById('wantedReward').value = '';
+            alert("⚠️ تم إضافة المطلوب لقائمة الدولة بنجاح!");
         }
 
-        function completeLogin() {
-            document.getElementById('login-gateway').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('login-gateway').style.display = 'none';
-                document.getElementById('app-wrapper').style.opacity = '1';
-                document.getElementById('app-wrapper').style.pointerEvents = 'auto';
-                
-                // إعداد بيانات الجلسة
-                document.getElementById('ui-username').innerText = currentUser.name;
-                document.getElementById('ui-avatar').src = currentUser.avatar;
-                document.getElementById('ui-role').innerText = isAdmin ? "SYSTEM ADMIN" : "FIELD OFFICER";
-                if(isAdmin) document.getElementById('admin-menu-section').style.display = 'block';
-                
-                checkProfileExistence();
-                updateDashboardUI();
-            }, 800);
-        }
-
-        function checkProfileExistence() {
-            if(isAdmin) return;
-            let exists = officers.find(o => o.name === currentUser.name);
-            if(!exists) {
-                officers.push({ name: currentUser.name, badge: "NEW", rank: "مستجد", points: 0, active: false });
+        function deleteWanted(id) {
+            if (confirm("هل تم إلقاء القبض أو تريد إزالة المطلوب من القائمة؟")) {
+                wantedList = wantedList.filter(w => w.id !== id);
                 saveData();
             }
         }
 
-        // ================= التبديل بين القوائم =================
-        function openTab(evt, tabId) {
-            document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
-        }
-
-        // ================= نظام البصمة المتقدم =================
-        function startScan() {
-            if(isAdmin) return alert("القيادة غير مطالبة بالتحضير.");
-            if(isScanning) return;
-            isScanning = true;
-            
-            const btn = document.getElementById('biometric-btn');
-            const pctText = document.getElementById('scan-pct');
-            btn.classList.add('scanning');
-            
-            let progress = 0;
-            let interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5;
-                if(progress > 100) progress = 100;
-                pctText.innerText = progress + "%";
-                
-                if(progress === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        btn.classList.remove('scanning');
-                        pctText.innerText = "0%";
-                        isScanning = false;
-                        processAttendanceRecord();
-                    }, 500);
-                }
-            }, 200);
-        }
-
-        function processAttendanceRecord() {
-            let off = officers.find(o => o.name === currentUser.name);
-            if(!off) return;
-            
-            const timeStr = new Date().toLocaleTimeString('en-US', { hour12: false });
-            if(off.active) {
-                off.active = false; off.points += 5;
-                logs.unshift({ name: off.name, action: "تسجيل خروج (إنهاء وردية)", time: timeStr });
-            } else {
-                off.active = true; off.points += 2;
-                logs.unshift({ name: off.name, action: "تسجيل دخول (استلام وردية)", time: timeStr });
+        // نظام البصمة والدخول والخروج
+        function toggleAttendance() {
+            if (!currentUserData) {
+                return alert("⚠️ يجب عليك تسجيل الدخول بـ Discord أولاً للتبصيم والتحضير!");
             }
-            if(logs.length > 8) logs.pop();
+
+            const name = currentUserData.displayName;
+            let officer = officers.find(o => o.name.toLowerCase() === name.toLowerCase());
+
+            if (!officer) {
+                officer = {
+                    id: Date.now(),
+                    badge: "غير مخصص",
+                    name: name,
+                    rank: "مستجد",
+                    dept: "تحت التدريب",
+                    status: "active",
+                    points: 0,
+                    isLoggedIn: false
+                };
+                officers.push(officer);
+            }
+
+            if (!officer.points) officer.points = 0;
+
+            const now = new Date();
+            const timeString = `${now.toLocaleDateString('ar-SA')} - ${now.toLocaleTimeString('ar-SA')}`;
+
+            if (!officer.isLoggedIn) {
+                officer.isLoggedIn = true;
+                officer.points += 10;
+                attendanceLogs.unshift({
+                    name: name,
+                    type: "تسجيل دخول (دوري)",
+                    time: timeString,
+                    pointsGained: "+10 نقاط"
+                });
+                alert(`✅ تم تبصيم دخولك بنجاح! تم إضافة 10 نقاط لحسابك. مجموع نقاطك الآن: ${officer.points}`);
+            } else {
+                officer.isLoggedIn = false;
+                officer.points += 5;
+                attendanceLogs.unshift({
+                    name: name,
+                    type: "تسجيل خروج (نهاية الاستلام)",
+                    time: timeString,
+                    pointsGained: "+5 نقاط"
+                });
+                alert(`🔴 تم تبصيم خروجك بنجاح! تم إضافة 5 نقاط لحسابك. مجموع نقاطك الآن: ${officer.points}`);
+            }
+
             saveData();
         }
 
-        // ================= تحديث واجهة المستخدم (UI) =================
-        function updateDashboardUI() {
-            // تحديث الإحصائيات
-            document.getElementById('stat-total').innerText = officers.length;
-            document.getElementById('stat-active').innerText = officers.filter(o => o.active).length;
-            document.getElementById('stat-wanted').innerText = wantedList.length;
+        function addPointsByAdmin() {
+            const selectElem = document.getElementById('adminOfficerSelect');
+            const amountElem = document.getElementById('adminPointsAmount');
+            const officerId = parseInt(selectElem.value);
+            const pointsToAdd = parseInt(amountElem.value);
 
-            // تحديث السجل
-            const logsTbody = document.getElementById('logs-table');
-            logsTbody.innerHTML = '';
-            logs.forEach(l => {
-                let color = l.action.includes('دخول') ? 'var(--neon-green)' : 'var(--neon-red)';
-                logsTbody.innerHTML += `<tr><td>${l.name}</td><td style="color:${color}; font-weight:bold;">${l.action}</td><td><span style="font-family:'Rajdhani'">${l.time}</span></td></tr>`;
-            });
+            if (!officerId || isNaN(pointsToAdd)) {
+                return alert("الرجاء اختيار العسكري وتحديد عدد النقاط!");
+            }
 
-            // تحديث جدول الضباط
-            const offTbody = document.getElementById('officers-table-body');
-            offTbody.innerHTML = '';
-            officers.forEach(o => {
-                let status = o.active ? `<span style="color:var(--neon-green)">متصل بالخدمة</span>` : `<span style="color:var(--text-muted)">غير متصل</span>`;
-                offTbody.innerHTML += `<tr><td>${o.badge}</td><td>${o.name}</td><td>${o.rank}</td><td style="font-family:'Rajdhani'">${o.points} PTS</td><td>${status}</td></tr>`;
-            });
+            const officer = officers.find(o => o.id === officerId);
+            if (officer) {
+                officer.points = (officer.points || 0) + pointsToAdd;
+                alert(`✅ تم تعديل نقاط العسكري (${officer.name}) بنجاح. النقاط الجديدة: ${officer.points}`);
+                amountElem.value = '';
+                saveData();
+            }
+        }
 
-            // تحديث المطلوبين
-            const wArea = document.getElementById('wanted-render-area');
-            wArea.innerHTML = '';
-            wantedList.forEach(w => {
-                wArea.innerHTML += `
-                    <div class="wanted-card">
-                        <div class="wanted-img-box">
-                            <img src="${w.img}" alt="Target">
-                            <div class="bounty-tag">BOUNTY: ${w.bounty}</div>
-                        </div>
+        function addOfficerByAdmin() {
+            const name = document.getElementById('officerName').value.trim();
+            const badge = document.getElementById('badgeNumber').value.trim();
+            const rank = document.getElementById('officerRank').value;
+            const dept = document.getElementById('department').value;
+
+            if (!name || !badge) return alert("الرجاء إكمال بيانات الاسم والباج!");
+
+            const existingIndex = officers.findIndex(o => o.name.toLowerCase() === name.toLowerCase());
+
+            if (existingIndex !== -1) {
+                officers[existingIndex].badge = badge;
+                officers[existingIndex].rank = rank;
+                officers[existingIndex].dept = dept;
+            } else {
+                officers.push({
+                    id: Date.now(),
+                    badge: badge,
+                    name: name,
+                    rank: rank,
+                    dept: dept,
+                    status: "active",
+                    points: 0,
+                    isLoggedIn: false
+                });
+            }
+
+            saveData();
+            document.getElementById('officerName').value = '';
+            document.getElementById('badgeNumber').value = '';
+        }
+
+        function deleteOfficer(id) {
+            if (confirm("هل أنت تأكد من الحذف؟")) {
+                officers = officers.filter(o => o.id !== id);
+                saveData();
+            }
+        }
+
+        function toggleStatus(id) {
+            const officer = officers.find(o => o.id === id);
+            if (officer) {
+                if (officer.status === 'active') officer.status = 'leave';
+                else if (officer.status === 'leave') officer.status = 'suspended';
+                else officer.status = 'active';
+                saveData();
+            }
+        }
+
+        function submitRequest() {
+            if (!currentUserData) return alert("⚠️ يجب عليك تسجيل الدخول بحساب Discord!");
+            const reason = document.getElementById('reqReason').value.trim();
+            if (!reason) return alert("اكتب سبب الطلب!");
+
+            requests.push({ id: Date.now(), name: currentUserData.displayName, reason: reason, status: 'pending' });
+            saveData();
+            document.getElementById('reqReason').value = '';
+            alert("✅ تم تقديم طلب الإجازة بنجاح.");
+        }
+
+        function submitReport() {
+            if (!currentUserData) return alert("⚠️ سجل الدخول بـ Discord أولاً!");
+            const target = document.getElementById('reportTarget').value.trim();
+            const details = document.getElementById('reportDetails').value.trim();
+            if (!target || !details) return alert("أكمل كافة البيانات!");
+
+            reports.push({ id: Date.now(), officer: currentUserData.displayName, target: target, type: document.getElementById('reportType').value, details: details });
+            saveData();
+            document.getElementById('reportTarget').value = '';
+            document.getElementById('reportDetails').value = '';
+            alert("🚨 تم تسجيل البلاغ والمخالفة!");
+        }
+
+        function renderAll() {
+            document.getElementById('homeTotalOfficers').textContent = officers.length;
+            document.getElementById('homeActiveOfficers').textContent = officers.filter(o => o.status === 'active').length;
+            document.getElementById('homeTotalWanted').textContent = wantedList.length;
+            document.getElementById('homeLeaveOfficers').textContent = officers.filter(o => o.status === 'leave').length;
+            document.getElementById('homeTotalRequests').textContent = requests.filter(r => r.status === 'pending').length;
+
+            // عرض قائمة المطلوبين بالواجهة العامة
+            document.getElementById('publicWantedGrid').innerHTML = wantedList.map(w => `
+                <div class="wanted-card">
+                    <div class="wanted-header">MOST WANTED • مطلوب أمنياً</div>
+                    <img src="${w.img}" alt="${w.name}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                    <div class="wanted-body">
                         <div class="wanted-name">${w.name}</div>
-                        <div class="wanted-crime">${w.crime}</div>
-                    </div>`;
-            });
+                        <div class="wanted-info">${w.info}</div>
+                        <div class="wanted-danger-level">
+                            <span>الدرجة / المكافأة:</span>
+                            <span style="color:var(--danger);">${w.reward}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || `<p style="text-align:center; color:var(--text-muted); grid-column: 1/-1;">لا يوجد مطلوبين أمنياً في القائمة حالياً.</p>`;
 
-            // تحديث الملف الشخصي والبصمة للمستخدم الحالي
-            if(currentUser && !isAdmin) {
-                let me = officers.find(o => o.name === currentUser.name);
-                if(me) {
-                    document.getElementById('prof-img').src = currentUser.avatar;
-                    document.getElementById('prof-name').value = me.name;
-                    document.getElementById('prof-rank').value = me.rank;
-                    document.getElementById('prof-badge').value = me.badge;
-                    document.getElementById('prof-pts').value = me.points + " PTS";
+            // عرض إدارة المطلوبين بداخل لوحة التحكم
+            document.getElementById('adminWantedTable').innerHTML = wantedList.map(w => `
+                <tr>
+                    <td><img src="${w.img}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'"></td>
+                    <td><strong>${w.name}</strong></td>
+                    <td><small>${w.info}</small></td>
+                    <td><span class="badge badge-suspended">${w.reward}</span></td>
+                    <td><button class="action-btn btn-delete" onclick="deleteWanted(${w.id})">🗑️ تم القبض / حذف</button></td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" style="text-align:center;">القائمة فارغة.</td></tr>`;
+
+            // تحديث قائمة العساكر لتغيير النقاط في اللوحة
+            const selectElem = document.getElementById('adminOfficerSelect');
+            selectElem.innerHTML = '<option value="">-- اختر العسكري --</option>' + officers.map(o => `<option value="${o.id}">${o.name} (الباج: ${o.badge}) - [${o.points || 0} نقطة]</option>`).join('');
+
+            // الجدول العام للعساكر
+            document.getElementById('publicOfficersTable').innerHTML = officers.map(o => `
+                <tr>
+                    <td><span class="rank-badge">${o.badge}</span></td>
+                    <td><strong>${o.name}</strong></td>
+                    <td>${o.rank}</td>
+                    <td>${o.dept}</td>
+                    <td><span class="points-badge">⭐ ${o.points || 0} نقطة</span></td>
+                    <td>
+                        <span class="badge ${o.status === 'active' ? 'badge-active' : o.status === 'leave' ? 'badge-leave' : 'badge-suspended'}">
+                            ${o.status === 'active' ? 'على رأس العمل' : o.status === 'leave' ? 'في إجازة' : 'موقوف'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" style="text-align:center;">القائمة فارغة.</td></tr>`;
+
+            // جدول تحكم القيادة بالعساكر
+            document.getElementById('adminOfficersTable').innerHTML = officers.map(o => `
+                <tr>
+                    <td><strong>${o.badge}</strong></td>
+                    <td>${o.name}</td>
+                    <td>${o.rank}</td>
+                    <td><strong>${o.points || 0}</strong></td>
+                    <td>
+                        <span class="badge ${o.status === 'active' ? 'badge-active' : o.status === 'leave' ? 'badge-leave' : 'badge-suspended'}">
+                            ${o.status === 'active' ? 'ميداني' : o.status === 'leave' ? 'إجازة' : 'موقوف'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn btn-status" onclick="toggleStatus(${o.id})">🔄</button>
+                        <button class="action-btn btn-delete" onclick="deleteOfficer(${o.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="6" style="text-align:center;">القائمة فارغة.</td></tr>`;
+
+            // جدول سجل التبصيم
+            document.getElementById('publicAttendanceTable').innerHTML = attendanceLogs.slice(0, 15).map(a => `
+                <tr>
+                    <td><strong>${a.name}</strong></td>
+                    <td>${a.type}</td>
+                    <td><small>${a.time}</small></td>
+                    <td><span style="color:var(--success); font-weight:bold;">${a.pointsGained}</span></td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" style="text-align:center;">لا توجد سجلات تحضير بالبصمة حتى الآن.</td></tr>`;
+
+            // القيادات، الأسلحة، البلاغات
+            document.getElementById('publicLeadersGrid').innerHTML = leadersList.map(l => `<div class="leader-card"><div class="leader-avatar">👑</div><div class="leader-title">${l.title}</div><div class="leader-name">${l.name}</div><div class="leader-desc">${l.desc}</div></div>`).join('');
+            document.getElementById('publicWeaponsTable').innerHTML = weaponsList.map(w => `<tr><td><strong>${w.name}</strong></td><td><span class="badge badge-active">${w.rank}</span></td></tr>`).join('');
+            document.getElementById('publicVehiclesTable').innerHTML = vehiclesList.map(v => `<tr><td><strong>${v.name}</strong></td><td><span class="badge badge-leave">${v.dept}</span></td></tr>`).join('');
+            document.getElementById('publicReportsTable').innerHTML = reports.map(r => `<tr><td><strong>${r.officer}</strong></td><td>${r.target}</td><td><span class="badge badge-suspended">${r.type}</span><br><small style="color:var(--text-muted);">${r.details}</small></td></tr>`).join('');
+            document.getElementById('publicRequestsTable').innerHTML = requests.map(r => `<tr><td>${r.name}</td><td>${r.reason}</td><td><span class="badge ${r.status === 'approved' ? 'badge-leave' : r.status === 'rejected' ? 'badge-suspended' : 'badge-active'}">${r.status === 'approved' ? 'مقبولة' : r.status === 'rejected' ? 'مرفوضة' : 'قيد النظر'}</span></td></tr>`).join('');
+
+            // تحديث الملف الشخصي للضابط
+            if (currentUserData) {
+                const foundOfficer = officers.find(o => o.name.toLowerCase() === currentUserData.displayName.toLowerCase());
+                if (foundOfficer) {
+                    document.getElementById('rankName').value = foundOfficer.rank;
+                    document.getElementById('rankLevel').value = foundOfficer.badge;
+                    document.getElementById('deptName').value = foundOfficer.dept;
+                    document.getElementById('officerPointsDisplay').value = `${foundOfficer.points || 0} نقطة تراكمية`;
                     
-                    const statusDiv = document.getElementById('user-status-display');
-                    if(me.active) {
-                        statusDiv.className = 'status-msg status-active';
-                        statusDiv.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> الحالة الحالية: متصل بالخدمة الميدانية';
+                    if(foundOfficer.isLoggedIn) {
+                        document.getElementById('attendanceStatusText').innerHTML = "حالتك الآن: <span style='color:var(--success);'>على رأس العمل (مسجل دخول)</span> - اضغط للبصمة والخروج";
                     } else {
-                        statusDiv.className = 'status-msg status-inactive';
-                        statusDiv.innerHTML = '<i class="fa-solid fa-bed"></i> الحالة الحالية: خارج الاستلام';
+                        document.getElementById('attendanceStatusText').innerHTML = "حالتك الآن: <span style='color:var(--danger);'>خارج الاستلام</span> - اضغط للبصمة والدخول";
                     }
                 }
             }
         }
 
-        // ================= الإدارة =================
-        function adminAddWanted() {
-            let name = document.getElementById('add-w-name').value;
-            let crime = document.getElementById('add-w-crime').value;
-            let bounty = document.getElementById('add-w-bounty').value;
-            let img = document.getElementById('add-w-img').value || "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=400";
-            if(!name || !crime) return alert("يرجى ملء البيانات");
-            wantedList.push({name, crime, bounty, img});
-            saveData(); alert("تم إضافة الهدف بنجاح.");
-            document.querySelectorAll('#tab-admin input').forEach(i => i.value = '');
+        function filterOfficers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#adminOfficersTable tr');
+            rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none'; });
         }
 
-        function adminAddOfficer() {
-            let name = document.getElementById('add-o-name').value;
-            let badge = document.getElementById('add-o-badge').value;
-            let rank = document.getElementById('add-o-rank').value;
-            if(!name) return;
-            let existing = officers.find(o => o.name === name);
-            if(existing) { existing.badge = badge; existing.rank = rank; }
-            else { officers.push({ name, badge, rank, points: 0, active: false }); }
-            saveData(); alert("تم تحديث بيانات الضابط.");
-        }
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            const urlParams = new URLSearchParams(window.location.search);
+            const userParam = urlParams.get('user');
 
-        // الساعة المباشرة
-        setInterval(() => {
-            document.getElementById('clock-display').innerText = new Date().toLocaleTimeString('en-US', { hour12: false });
-        }, 1000);
+            if (userParam) {
+                try {
+                    currentUserData = JSON.parse(decodeURIComponent(userParam));
+                    const displayName = currentUserData.serverName || currentUserData.nickname || currentUserData.username || 'ضابط';
+                    currentUserData.displayName = displayName;
 
+                    document.getElementById('headerUserName').textContent = displayName;
+                    document.getElementById('headerAvatar').src = currentUserData.avatar;
+                    document.getElementById('userHeaderBox').style.display = 'flex';
+                    document.getElementById('mainDiscordLoginBtn').style.display = 'none';
+
+                    document.getElementById('policeName').value = displayName;
+                    if (document.getElementById('reqName')) document.getElementById('reqName').value = displayName;
+                    if (document.getElementById('reportOfficer')) document.getElementById('reportOfficer').value = displayName;
+
+                    renderAll();
+                } catch (err) { console.error("خطأ:", err); }
+            }
+        });
     </script>
 </body>
 </html>
