@@ -6,18 +6,19 @@
     <title>LordTown | البوابة الرسمية LSPD</title>
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --sidebar-bg: #1e293b;
-            --primary: #3b82f6;
-            --accent: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-body: #0b0f19;
+            --bg-card: #151c2c;
+            --primary: #2563eb;
+            --accent: #dc2626;
+            --text-main: #f3f4f6;
+            --text-sub: #9ca3af;
+            --border-color: #1f293d;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             margin: 0;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-body);
             color: var(--text-main);
             display: flex;
             height: 100vh;
@@ -26,167 +27,166 @@
 
         /* القائمة الجانبية */
         .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            padding: 20px;
+            width: 280px;
+            background-color: var(--bg-card);
+            border-left: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.5);
+            padding: 20px 15px;
+            box-sizing: border-box;
             overflow-y: auto;
         }
 
-        .sidebar h2 {
-            text-align: center;
-            color: var(--primary);
+        .sidebar-header {
             font-size: 1.2rem;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .category {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 20px;
-            margin-bottom: 8px;
             font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .nav-link {
-            text-decoration: none;
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            background-color: transparent;
             color: var(--text-main);
-            padding: 10px 15px;
-            margin: 4px 0;
-            border-radius: 6px;
-            transition: all 0.3s ease;
             cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             font-size: 0.95rem;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--primary);
-            color: #fff;
+        .menu-item:hover {
+            background-color: rgba(37, 99, 235, 0.15);
+            color: var(--primary);
         }
 
-        .admin-link {
+        .menu-item.active {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .menu-item.admin {
+            border: 1px dashed var(--accent);
             color: var(--accent);
-            border: 1px solid var(--accent);
             margin-top: 10px;
         }
 
-        .admin-link:hover {
+        .menu-item.admin:hover {
             background-color: var(--accent);
-            color: #fff;
+            color: #ffffff;
         }
 
-        /* المحتوى الرئيسي */
-        .main-content {
+        /* حاوية المحتوى الرئيسي */
+        .main-container {
             flex: 1;
             padding: 30px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
-        .header {
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--sidebar-bg);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .header h1 {
+        .top-bar h1 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.5rem;
         }
 
-        .api-status {
-            font-size: 0.85rem;
+        .status-badge {
+            background-color: rgba(16, 185, 129, 0.1);
             color: #10b981;
-            background: #064e3b;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
-        .card {
-            background-color: var(--sidebar-bg);
-            padding: 25px;
+        .content-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            min-height: 200px;
+            padding: 25px;
+            flex: 1;
         }
     </style>
 </head>
 <body>
 
-    <!-- القائمة الجانبية بعد الترتيب الجديد -->
-    <div class="sidebar">
-        <h2>LordTown | LSPD</h2>
+    <!-- القائمة الجانبية بالقوائم المرتبة -->
+    <aside class="sidebar">
+        <div class="sidebar-header">LordTown | LSPD</div>
+        <ul class="menu-list">
+            <li class="menu-item active" onclick="selectMenu(this, 'الرئيسية', 'الواجهة الأساسية لنظام LordTown | LSPD العسكري للقيادة والسيطرة الميدانية.')">1. الرئيسية</li>
+            <li class="menu-item" onclick="selectMenu(this, 'القوانين والتعليمات', 'اللائحة والقوانين العسكرية الموحدة، وتشمل الانضباط وبروتوكول استخدام السلاح.')">2. القوانين والتعليمات</li>
+            <li class="menu-item" onclick="selectMenu(this, 'قيادات الدولة', 'قائمة تعرض قيادات دولة Lord Town العليا والمسؤولين.')">3. قيادات الدولة</li>
+            <li class="menu-item" onclick="selectMenu(this, 'جدول التوزيع', 'جدول مخصص لتوزيع القطاعات، وحدات الدوريات، والمسؤولين الميدانيين.')">4. جدول التوزيع</li>
+            <li class="menu-item" onclick="selectMenu(this, 'البلاغات والمخالفات', 'نظام مخصص لتسجيل البلاغات والمخالفات الميدانية ضد المشتبه بهم.')">5. البلاغات والمخالفات</li>
+            <li class="menu-item" onclick="selectMenu(this, 'الأسلحة والمركبات', 'قائمة الأسلحة والمركبات الميدانية المعتمدة والمصرحة رسمياً لقطاع الشرطة.')">6. الأسلحة والمركبات</li>
+            <li class="menu-item" onclick="selectMenu(this, 'ملف الضابط', 'الملف الشخصي الذي يعرض بيانات العسكري، الرتبة، الباج، والنقاط التراكمية.')">7. ملف الضابط</li>
+            <li class="menu-item" onclick="selectMenu(this, 'القائمة العسكرية', 'القائمة العامة التي تضم جميع العساكر، باجاتهم، رتبهم، وحداتهم، ونقاطهم الحالية.')">8. القائمة العسكرية</li>
+            <li class="menu-item" onclick="selectMenu(this, 'تقديم الإجازات', 'قسم مخصص لتقديم طلبات الإجازة الرسمية ومتابعة حالة قبولها أو رفضها من القيادة.')">9. تقديم الإجازات</li>
+            <li class="menu-item admin" onclick="accessAdmin(this)">10. لوحة القيادات 🔒</li>
+        </ul>
+    </aside>
 
-        <div class="category">القسم العام</div>
-        <a class="nav-link active" onclick="loadSection('الرئيسية', 'الواجهة الأساسية لنظام القيادة والسيطرة الميدانية.', this)">الرئيسية</a>
-        <a class="nav-link" onclick="loadSection('القوانين والتعليمات', 'اللائحة والقوانين العسكرية الموحدة، وتشمل الانضباط وبروتوكول السلاح.', this)">القوانين والتعليمات</a>
-        <a class="nav-link" onclick="loadSection('قيادات الدولة', 'قائمة تعرض قيادات دولة Lord Town العليا والمسؤولين.', this)">قيادات الدولة</a>
-
-        <div class="category">العمليات الميدانية</div>
-        <a class="nav-link" onclick="loadSection('جدول التوزيع', 'جدول مخصص لتوزيع القطاعات، وحدات الدوريات، والمسؤولين الميدانيين.', this)">جدول التوزيع</a>
-        <a class="nav-link" onclick="loadSection('البلاغات والمخالفات', 'نظام مخصص لتسجيل البلاغات والمخالفات الميدانية ضد المشتبه بهم.', this)">البلاغات والمخالفات</a>
-        <a class="nav-link" onclick="loadSection('الأسلحة والمركبات', 'قائمة الأسلحة والمركبات الميدانية المعتمدة والمصرحة رسمياً.', this)">الأسلحة والمركبات</a>
-
-        <div class="category">شؤون الأفراد</div>
-        <a class="nav-link" onclick="loadSection('ملف الضابط', 'الملف الشخصي: يعرض بيانات العسكري، الرتبة، الباج، والنقاط التراكمية.', this)">ملف الضابط</a>
-        <a class="nav-link" onclick="loadSection('القائمة العسكرية', 'القائمة العامة: جميع العساكر، باجاتهم، رتبهم، وحداتهم، ونقاطهم.', this)">القائمة العسكرية</a>
-        <a class="nav-link" onclick="loadSection('تقديم الإجازات', 'قسم مخصص لتقديم طلبات الإجازة الرسمية ومتابعة حالتها.', this)">تقديم الإجازات</a>
-
-        <div class="category">الإدارة والتحكم</div>
-        <a class="nav-link admin-link" onclick="checkAdmin(this)">لوحة القيادات 🔒</a>
-    </div>
-
-    <!-- منطقة عرض المحتوى -->
-    <div class="main-content">
-        <div class="header">
-            <h1 id="page-title">الرئيسية</h1>
-            <span class="api-status">متصل بالنظام: 03gqislej5.apps</span>
+    <!-- منطقة عرض البيانات -->
+    <main class="main-container">
+        <div class="top-bar">
+            <h1 id="section-title">الرئيسية</h1>
+            <span class="status-badge">API: 03gqislej5.apps.bot-hosting.cloud</span>
         </div>
-        
-        <div class="card" id="page-content">
-            <p>الواجهة الأساسية لنظام LordTown | LSPD العسكري للقيادة والسيطرة الميدانية. يرجى اختيار القسم من القائمة الجانبية لعرض البيانات.</p>
+
+        <div class="content-box" id="section-body">
+            <p>الواجهة الأساسية لنظام LordTown | LSPD العسكري للقيادة والسيطرة الميدانية.</p>
         </div>
-    </div>
+    </main>
 
     <script>
-        // دالة لتغيير المحتوى وتنشيط الأزرار
-        function loadSection(title, description, element) {
-            // إزالة التنشيط من جميع الأزرار
-            let links = document.querySelectorAll('.nav-link');
-            links.forEach(link => link.classList.remove('active'));
-            
-            // تنشيط الزر الحالي
-            if(element) element.classList.add('active');
+        const API_BASE = "https://03gqislej5.apps.bot-hosting.cloud";
 
-            // تحديث المحتوى
-            document.getElementById('page-title').innerText = title;
-            document.getElementById('page-content').innerHTML = `
-                <h3 style="color: #3b82f6;">${title}</h3>
-                <p>${description}</p>
-                <hr style="border-color: #334155; margin: 20px 0;">
-                <p style="color: #94a3b8; font-size: 0.9rem;">جاري جلب البيانات من الـ API الأساسي...</p>
+        function selectMenu(element, title, description) {
+            // تحديث حالة الأزرار النشطة
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // تحديث العنون والمحتوى
+            document.getElementById('section-title').innerText = title;
+            document.getElementById('section-body').innerHTML = `
+                <h3 style="color: var(--primary); margin-top: 0;">${title}</h3>
+                <p style="color: var(--text-sub); line-height: 1.6;">${description}</p>
+                <div style="margin-top: 30px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 6px; font-size: 0.85rem; color: var(--text-sub);">
+                    مصدر البيانات: ${API_BASE}
+                </div>
             `;
         }
 
-        // دالة حماية لوحة القيادات
-        function checkAdmin(element) {
-            let password = prompt("الرجاء إدخال رمز المرور السري للقيادة:");
-            
-            if(password === "LSPD1234") {
-                loadSection('لوحة القيادات', 'مرحباً بك في لوحة تحكم الإدارة العليا. يمكنك الآن إدارة الكادر والنظام من هنا.', element);
-                document.getElementById('page-content').innerHTML += `
-                    <div style="margin-top:20px; padding:15px; background:#064e3b; border-radius:5px;">
-                        تم التحقق بنجاح. الصلاحيات الممنوحة: مسؤول ميداني / إدارة عليا.
-                    </div>
-                `;
-            } else if(password !== null) {
-                alert("الرمز السري غير صحيح! تم تسجيل محاولة دخول فاشلة بالنظام.");
+        function accessAdmin(element) {
+            const pass = prompt("أدخل الرمز السري للوحة القيادة:");
+            if (pass === "LSPD1234") {
+                selectMenu(element, 'لوحة القيادات', 'لوحة القيادة والسيطرة المخصصة للمسؤولين لإدارة الكادر والنظام.');
+            } else if (pass !== null) {
+                alert("رمز المرور غير صحيح!");
             }
         }
     </script>
